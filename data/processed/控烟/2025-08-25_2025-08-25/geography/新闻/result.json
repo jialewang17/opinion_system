@@ -1,0 +1,127 @@
+{
+  "total_count": 357,
+  "region_distribution": {
+    "type": "map",
+    "data": [
+      {
+        "name": "浙江省",
+        "value": 284
+      },
+      {
+        "name": "未知",
+        "value": 26
+      },
+      {
+        "name": "上海市",
+        "value": 16
+      },
+      {
+        "name": "广东省",
+        "value": 6
+      },
+      {
+        "name": "江苏省",
+        "value": 5
+      },
+      {
+        "name": "北京市",
+        "value": 4
+      },
+      {
+        "name": "安徽省",
+        "value": 2
+      },
+      {
+        "name": "湖南省",
+        "value": 2
+      },
+      {
+        "name": "陕西省",
+        "value": 2
+      },
+      {
+        "name": "山西省",
+        "value": 2
+      },
+      {
+        "name": "河南省",
+        "value": 1
+      },
+      {
+        "name": "内蒙古自治区",
+        "value": 1
+      },
+      {
+        "name": "黑龙江省",
+        "value": 1
+      },
+      {
+        "name": "河北省",
+        "value": 1
+      },
+      {
+        "name": "辽宁省",
+        "value": 1
+      },
+      {
+        "name": "江西省",
+        "value": 1
+      },
+      {
+        "name": "台湾省",
+        "value": 1
+      },
+      {
+        "name": "福建省",
+        "value": 1
+      }
+    ],
+    "title": "地域分布"
+  },
+  "region_ranking": {
+    "type": "bar",
+    "data": [
+      {
+        "name": "浙江省",
+        "value": 284
+      },
+      {
+        "name": "未知",
+        "value": 26
+      },
+      {
+        "name": "上海市",
+        "value": 16
+      },
+      {
+        "name": "广东省",
+        "value": 6
+      },
+      {
+        "name": "江苏省",
+        "value": 5
+      },
+      {
+        "name": "北京市",
+        "value": 4
+      },
+      {
+        "name": "安徽省",
+        "value": 2
+      },
+      {
+        "name": "湖南省",
+        "value": 2
+      },
+      {
+        "name": "陕西省",
+        "value": 2
+      },
+      {
+        "name": "山西省",
+        "value": 2
+      }
+    ],
+    "title": "地域热度排名"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "total_count": 357,
+  "attitude_distribution": {
+    "type": "pie",
+    "data": [
+      {
+        "name": "negative",
+        "value": 257
+      },
+      {
+        "name": "neutral",
+        "value": 100
+      }
+    ],
+    "title": "态度分布"
+  },
+  "attitude_summary": {
+    "positive_count": 0,
+    "negative_count": 257,
+    "neutral_count": 100,
+    "positive_ratio": 0.0,
+    "negative_ratio": 0.7198879551820728,
+    "neutral_ratio": 0.2801120448179272
+  }
+}

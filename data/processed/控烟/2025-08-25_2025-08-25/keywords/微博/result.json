@@ -1,0 +1,897 @@
+{
+  "total_keywords": 3130,
+  "top_keywords": {
+    "type": "bar",
+    "data": [
+      {
+        "name": "鲁迅",
+        "value": 3957
+      },
+      {
+        "name": "投诉",
+        "value": 2328
+      },
+      {
+        "name": "夹烟",
+        "value": 1352
+      },
+      {
+        "name": "青少年",
+        "value": 1029
+      },
+      {
+        "name": "误导",
+        "value": 1014
+      },
+      {
+        "name": "抽烟",
+        "value": 991
+      },
+      {
+        "name": "志愿者",
+        "value": 737
+      },
+      {
+        "name": "历史",
+        "value": 716
+      },
+      {
+        "name": "女士",
+        "value": 677
+      },
+      {
+        "name": "绍兴",
+        "value": 675
+      },
+      {
+        "name": "纪念馆",
+        "value": 656
+      },
+      {
+        "name": "游客",
+        "value": 599
+      },
+      {
+        "name": "回应",
+        "value": 489
+      },
+      {
+        "name": "允悲",
+        "value": 482
+      },
+      {
+        "name": "自称",
+        "value": 423
+      },
+      {
+        "name": "景区",
+        "value": 376
+      },
+      {
+        "name": "女子",
+        "value": 365
+      },
+      {
+        "name": "建议",
+        "value": 332
+      },
+      {
+        "name": "形象",
+        "value": 311
+      },
+      {
+        "name": "握拳",
+        "value": 307
+      }
+    ],
+    "title": "Top 20 关键词"
+  },
+  "top_200_keywords": [
+    {
+      "word": "鲁迅",
+      "count": 3957
+    },
+    {
+      "word": "投诉",
+      "count": 2328
+    },
+    {
+      "word": "夹烟",
+      "count": 1352
+    },
+    {
+      "word": "青少年",
+      "count": 1029
+    },
+    {
+      "word": "误导",
+      "count": 1014
+    },
+    {
+      "word": "抽烟",
+      "count": 991
+    },
+    {
+      "word": "志愿者",
+      "count": 737
+    },
+    {
+      "word": "历史",
+      "count": 716
+    },
+    {
+      "word": "女士",
+      "count": 677
+    },
+    {
+      "word": "绍兴",
+      "count": 675
+    },
+    {
+      "word": "纪念馆",
+      "count": 656
+    },
+    {
+      "word": "游客",
+      "count": 599
+    },
+    {
+      "word": "回应",
+      "count": 489
+    },
+    {
+      "word": "允悲",
+      "count": 482
+    },
+    {
+      "word": "自称",
+      "count": 423
+    },
+    {
+      "word": "景区",
+      "count": 376
+    },
+    {
+      "word": "女子",
+      "count": 365
+    },
+    {
+      "word": "建议",
+      "count": 332
+    },
+    {
+      "word": "形象",
+      "count": 311
+    },
+    {
+      "word": "握拳",
+      "count": 307
+    },
+    {
+      "word": "公共场合",
+      "count": 278
+    },
+    {
+      "word": "禁烟",
+      "count": 276
+    },
+    {
+      "word": "背景",
+      "count": 259
+    },
+    {
+      "word": "健康",
+      "count": 254
+    },
+    {
+      "word": "公共场所",
+      "count": 249
+    },
+    {
+      "word": "精神",
+      "count": 247
+    },
+    {
+      "word": "视频",
+      "count": 242
+    },
+    {
+      "word": "打卡",
+      "count": 234
+    },
+    {
+      "word": "版画",
+      "count": 228
+    },
+    {
+      "word": "香烟",
+      "count": 224
+    },
+    {
+      "word": "观察者",
+      "count": 224
+    },
+    {
+      "word": "画面",
+      "count": 222
+    },
+    {
+      "word": "禁止",
+      "count": 217
+    },
+    {
+      "word": "绍兴市",
+      "count": 216
+    },
+    {
+      "word": "点烟",
+      "count": 215
+    },
+    {
+      "word": "思想",
+      "count": 199
+    },
+    {
+      "word": "关注",
+      "count": 197
+    },
+    {
+      "word": "新闻",
+      "count": 191
+    },
+    {
+      "word": "文化",
+      "count": 178
+    },
+    {
+      "word": "意见",
+      "count": 178
+    },
+    {
+      "word": "人物",
+      "count": 164
+    },
+    {
+      "word": "去掉",
+      "count": 155
+    },
+    {
+      "word": "社会",
+      "count": 151
+    },
+    {
+      "word": "专员",
+      "count": 149
+    },
+    {
+      "word": "幽默",
+      "count": 148
+    },
+    {
+      "word": "灵感",
+      "count": 148
+    },
+    {
+      "word": "片场",
+      "count": 148
+    },
+    {
+      "word": "原画",
+      "count": 145
+    },
+    {
+      "word": "改为",
+      "count": 143
+    },
+    {
+      "word": "故里",
+      "count": 142
+    },
+    {
+      "word": "危害",
+      "count": 141
+    },
+    {
+      "word": "争议",
+      "count": 137
+    },
+    {
+      "word": "资料",
+      "count": 137
+    },
+    {
+      "word": "书房",
+      "count": 136
+    },
+    {
+      "word": "聚集",
+      "count": 134
+    },
+    {
+      "word": "尊重",
+      "count": 134
+    },
+    {
+      "word": "周令飞",
+      "count": 134
+    },
+    {
+      "word": "引导",
+      "count": 131
+    },
+    {
+      "word": "不行",
+      "count": 129
+    },
+    {
+      "word": "羊城晚报",
+      "count": 129
+    },
+    {
+      "word": "右手",
+      "count": 128
+    },
+    {
+      "word": "点燃",
+      "count": 125
+    },
+    {
+      "word": "平台",
+      "count": 123
+    },
+    {
+      "word": "更换",
+      "count": 120
+    },
+    {
+      "word": "表达",
+      "count": 120
+    },
+    {
+      "word": "来源",
+      "count": 117
+    },
+    {
+      "word": "引发",
+      "count": 116
+    },
+    {
+      "word": "社交",
+      "count": 113
+    },
+    {
+      "word": "换成",
+      "count": 111
+    },
+    {
+      "word": "动作",
+      "count": 111
+    },
+    {
+      "word": "集团",
+      "count": 108
+    },
+    {
+      "word": "馆方",
+      "count": 104
+    },
+    {
+      "word": "文旅",
+      "count": 103
+    },
+    {
+      "word": "风险",
+      "count": 100
+    },
+    {
+      "word": "理由",
+      "count": 98
+    },
+    {
+      "word": "越城区",
+      "count": 96
+    },
+    {
+      "word": "回复",
+      "count": 96
+    },
+    {
+      "word": "发文",
+      "count": 95
+    },
+    {
+      "word": "网友",
+      "count": 95
+    },
+    {
+      "word": "经典",
+      "count": 94
+    },
+    {
+      "word": "致敬",
+      "count": 93
+    },
+    {
+      "word": "原图",
+      "count": 92
+    },
+    {
+      "word": "价值",
+      "count": 92
+    },
+    {
+      "word": "艺术",
+      "count": 91
+    },
+    {
+      "word": "诱导",
+      "count": 91
+    },
+    {
+      "word": "模仿",
+      "count": 91
+    },
+    {
+      "word": "中国",
+      "count": 89
+    },
+    {
+      "word": "当事人",
+      "count": 88
+    },
+    {
+      "word": "创作",
+      "count": 87
+    },
+    {
+      "word": "举报",
+      "count": 86
+    },
+    {
+      "word": "红墙",
+      "count": 83
+    },
+    {
+      "word": "话题",
+      "count": 81
+    },
+    {
+      "word": "修改",
+      "count": 81
+    },
+    {
+      "word": "二手烟",
+      "count": 81
+    },
+    {
+      "word": "不妥",
+      "count": 79
+    },
+    {
+      "word": "引导人",
+      "count": 79
+    },
+    {
+      "word": "公共资源",
+      "count": 79
+    },
+    {
+      "word": "提出",
+      "count": 78
+    },
+    {
+      "word": "传承",
+      "count": 77
+    },
+    {
+      "word": "场景",
+      "count": 76
+    },
+    {
+      "word": "工作人员",
+      "count": 75
+    },
+    {
+      "word": "现实",
+      "count": 73
+    },
+    {
+      "word": "展示",
+      "count": 72
+    },
+    {
+      "word": "道德",
+      "count": 71
+    },
+    {
+      "word": "广告",
+      "count": 71
+    },
+    {
+      "word": "领导",
+      "count": 71
+    },
+    {
+      "word": "学习",
+      "count": 71
+    },
+    {
+      "word": "批判",
+      "count": 70
+    },
+    {
+      "word": "记者",
+      "count": 69
+    },
+    {
+      "word": "尺子",
+      "count": 69
+    },
+    {
+      "word": "文广",
+      "count": 68
+    },
+    {
+      "word": "烟纹",
+      "count": 68
+    },
+    {
+      "word": "浙江",
+      "count": 68
+    },
+    {
+      "word": "浪费",
+      "count": 67
+    },
+    {
+      "word": "百草园",
+      "count": 67
+    },
+    {
+      "word": "旅游局",
+      "count": 66
+    },
+    {
+      "word": "篡改",
+      "count": 65
+    },
+    {
+      "word": "浙江省",
+      "count": 65
+    },
+    {
+      "word": "相关",
+      "count": 65
+    },
+    {
+      "word": "戒烟",
+      "count": 65
+    },
+    {
+      "word": "电子",
+      "count": 65
+    },
+    {
+      "word": "平衡",
+      "count": 63
+    },
+    {
+      "word": "评论",
+      "count": 62
+    },
+    {
+      "word": "照片",
+      "count": 62
+    },
+    {
+      "word": "公众",
+      "count": 62
+    },
+    {
+      "word": "拍照",
+      "count": 62
+    },
+    {
+      "word": "三湘",
+      "count": 62
+    },
+    {
+      "word": "包含",
+      "count": 62
+    },
+    {
+      "word": "参观",
+      "count": 61
+    },
+    {
+      "word": "媒体",
+      "count": 61
+    },
+    {
+      "word": "盲目",
+      "count": 61
+    },
+    {
+      "word": "违反",
+      "count": 61
+    },
+    {
+      "word": "舆论",
+      "count": 59
+    },
+    {
+      "word": "起号",
+      "count": 59
+    },
+    {
+      "word": "空间",
+      "count": 58
+    },
+    {
+      "word": "我局",
+      "count": 57
+    },
+    {
+      "word": "发现",
+      "count": 57
+    },
+    {
+      "word": "条例",
+      "count": 57
+    },
+    {
+      "word": "讨论",
+      "count": 57
+    },
+    {
+      "word": "人群",
+      "count": 57
+    },
+    {
+      "word": "标准",
+      "count": 56
+    },
+    {
+      "word": "姐妹",
+      "count": 56
+    },
+    {
+      "word": "诉求",
+      "count": 56
+    },
+    {
+      "word": "传递",
+      "count": 56
+    },
+    {
+      "word": "职权范围",
+      "count": 55
+    },
+    {
+      "word": "宣传",
+      "count": 55
+    },
+    {
+      "word": "符号",
+      "count": 55
+    },
+    {
+      "word": "支烟",
+      "count": 54
+    },
+    {
+      "word": "查询",
+      "count": 54
+    },
+    {
+      "word": "名片",
+      "count": 54
+    },
+    {
+      "word": "想到",
+      "count": 54
+    },
+    {
+      "word": "可行性",
+      "count": 53
+    },
+    {
+      "word": "露天",
+      "count": 53
+    },
+    {
+      "word": "发声",
+      "count": 53
+    },
+    {
+      "word": "烟雾",
+      "count": 53
+    },
+    {
+      "word": "双手",
+      "count": 52
+    },
+    {
+      "word": "场所",
+      "count": 52
+    },
+    {
+      "word": "时代",
+      "count": 51
+    },
+    {
+      "word": "正确",
+      "count": 50
+    },
+    {
+      "word": "女生",
+      "count": 50
+    },
+    {
+      "word": "交叉",
+      "count": 50
+    },
+    {
+      "word": "雪茄",
+      "count": 50
+    },
+    {
+      "word": "生活",
+      "count": 49
+    },
+    {
+      "word": "逻辑",
+      "count": 49
+    },
+    {
+      "word": "绑架",
+      "count": 49
+    },
+    {
+      "word": "控制",
+      "count": 49
+    },
+    {
+      "word": "太饱",
+      "count": 48
+    },
+    {
+      "word": "观点",
+      "count": 47
+    },
+    {
+      "word": "帖子",
+      "count": 47
+    },
+    {
+      "word": "长孙",
+      "count": 47
+    },
+    {
+      "word": "鼓励",
+      "count": 47
+    },
+    {
+      "word": "投诉者",
+      "count": 46
+    },
+    {
+      "word": "思考",
+      "count": 46
+    },
+    {
+      "word": "官方",
+      "count": 46
+    },
+    {
+      "word": "意义",
+      "count": 46
+    },
+    {
+      "word": "巴顿",
+      "count": 46
+    },
+    {
+      "word": "教育",
+      "count": 45
+    },
+    {
+      "word": "市文",
+      "count": 45
+    },
+    {
+      "word": "热点",
+      "count": 45
+    },
+    {
+      "word": "面墙",
+      "count": 44
+    },
+    {
+      "word": "苛责",
+      "count": 44
+    },
+    {
+      "word": "决策",
+      "count": 44
+    },
+    {
+      "word": "手持",
+      "count": 44
+    },
+    {
+      "word": "上纲上线",
+      "count": 44
+    },
+    {
+      "word": "三味书屋",
+      "count": 44
+    },
+    {
+      "word": "主管",
+      "count": 43
+    },
+    {
+      "word": "回忆",
+      "count": 43
+    },
+    {
+      "word": "事儿",
+      "count": 43
+    },
+    {
+      "word": "影片",
+      "count": 43
+    },
+    {
+      "word": "建议您",
+      "count": 42
+    },
+    {
+      "word": "语境",
+      "count": 42
+    },
+    {
+      "word": "理性",
+      "count": 41
+    },
+    {
+      "word": "支持",
+      "count": 41
+    },
+    {
+      "word": "误解",
+      "count": 41
+    },
+    {
+      "word": "后易",
+      "count": 41
+    },
+    {
+      "word": "理解",
+      "count": 41
+    },
+    {
+      "word": "本质",
+      "count": 41
+    },
+    {
+      "word": "都市报",
+      "count": 41
+    },
+    {
+      "word": "文章",
+      "count": 41
+    },
+    {
+      "word": "洁癖",
+      "count": 40
+    }
+  ],
+  "keyword_summary": {
+    "total_unique_words": 3130,
+    "most_frequent_word": "鲁迅",
+    "most_frequent_count": 3957,
+    "avg_word_frequency": 15.636741214057508
+  }
+}

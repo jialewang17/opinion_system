@@ -1,0 +1,102 @@
+{
+  "all_publishers": {
+    "type": "bar",
+    "data": [
+      {
+        "name": "分秒必争风筝ON",
+        "value": 38
+      },
+      {
+        "name": "旅游消费避雷站",
+        "value": 15
+      },
+      {
+        "name": "极目新闻",
+        "value": 13
+      },
+      {
+        "name": "知识星空",
+        "value": 12
+      },
+      {
+        "name": "金羊网",
+        "value": 10
+      },
+      {
+        "name": "文化观察角",
+        "value": 10
+      },
+      {
+        "name": "哲思独白",
+        "value": 9
+      },
+      {
+        "name": "新京报",
+        "value": 8
+      },
+      {
+        "name": "大象新闻",
+        "value": 8
+      },
+      {
+        "name": "银元收藏",
+        "value": 8
+      },
+      {
+        "name": "观察者网",
+        "value": 8
+      },
+      {
+        "name": "世事见闻录",
+        "value": 8
+      },
+      {
+        "name": "大风新闻",
+        "value": 5
+      },
+      {
+        "name": "街谈巷语者",
+        "value": 5
+      },
+      {
+        "name": "向阳而生",
+        "value": 5
+      },
+      {
+        "name": "世相简",
+        "value": 4
+      },
+      {
+        "name": "老张侃诗词",
+        "value": 4
+      },
+      {
+        "name": "开屏新闻",
+        "value": 4
+      },
+      {
+        "name": "校园高能雷达",
+        "value": 3
+      },
+      {
+        "name": "趣话智翁",
+        "value": 3
+      }
+    ],
+    "title": "总体发布机构排名"
+  },
+  "channel_publishers": {
+    "type": "bar",
+    "series": [],
+    "title": "各渠道发布机构对比"
+  },
+  "publisher_activity": {},
+  "summary": {
+    "total_channels": 0,
+    "total_publishers": 907,
+    "total_records": 1283,
+    "avg_publishers_per_channel": 907.0,
+    "most_active_publisher": "分秒必争风筝ON",
+    "most_active_publisher_count": 38
+  }
+}

@@ -1,0 +1,370 @@
+{
+  "total_count": 2691,
+  "region_distribution": {
+    "type": "pie",
+    "data": [
+      {
+        "name": "浙江省",
+        "value": 1601
+      },
+      {
+        "name": "未知",
+        "value": 736
+      },
+      {
+        "name": "上海市",
+        "value": 158
+      },
+      {
+        "name": "北京市",
+        "value": 44
+      },
+      {
+        "name": "广东省",
+        "value": 24
+      },
+      {
+        "name": "江苏省",
+        "value": 21
+      },
+      {
+        "name": "辽宁省",
+        "value": 13
+      },
+      {
+        "name": "香港特别行政区",
+        "value": 10
+      },
+      {
+        "name": "江西省",
+        "value": 9
+      },
+      {
+        "name": "陕西省",
+        "value": 8
+      },
+      {
+        "name": "四川省",
+        "value": 7
+      },
+      {
+        "name": "安徽省",
+        "value": 7
+      },
+      {
+        "name": "湖南省",
+        "value": 7
+      },
+      {
+        "name": "河北省",
+        "value": 6
+      },
+      {
+        "name": "重庆市",
+        "value": 5
+      },
+      {
+        "name": "台湾省",
+        "value": 5
+      },
+      {
+        "name": "山西省",
+        "value": 5
+      },
+      {
+        "name": "云南省",
+        "value": 4
+      },
+      {
+        "name": "福建省",
+        "value": 3
+      },
+      {
+        "name": "河南省",
+        "value": 3
+      },
+      {
+        "name": "黑龙江省",
+        "value": 3
+      },
+      {
+        "name": "湖北省",
+        "value": 2
+      },
+      {
+        "name": "内蒙古自治区",
+        "value": 2
+      },
+      {
+        "name": "广西壮族自治区",
+        "value": 2
+      },
+      {
+        "name": "甘肃省",
+        "value": 1
+      },
+      {
+        "name": "吉林省",
+        "value": 1
+      },
+      {
+        "name": "贵州省",
+        "value": 1
+      },
+      {
+        "name": "青海省",
+        "value": 1
+      },
+      {
+        "name": "天津市",
+        "value": 1
+      },
+      {
+        "name": "新疆维吾尔自治区",
+        "value": 1
+      }
+    ],
+    "title": "地域分布"
+  },
+  "channel_region_comparison": {
+    "type": "bar",
+    "series": [
+      {
+        "name": "浙江省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "未知",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "上海市",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "北京市",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "云南省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "湖南省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "辽宁省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "四川省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "广东省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "山西省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "台湾省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "江西省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "湖北省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "陕西省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "甘肃省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "江苏省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "吉林省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "香港特别行政区",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "河南省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "重庆市",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "河北省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "贵州省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "福建省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "安徽省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "广西壮族自治区",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "内蒙古自治区",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "青海省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "黑龙江省",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "天津市",
+        "type": "bar",
+        "data": []
+      },
+      {
+        "name": "新疆维吾尔自治区",
+        "type": "bar",
+        "data": []
+      }
+    ],
+    "title": "各渠道地域对比"
+  },
+  "region_ranking": {
+    "type": "bar",
+    "data": [
+      {
+        "name": "浙江省",
+        "value": 1601
+      },
+      {
+        "name": "未知",
+        "value": 736
+      },
+      {
+        "name": "上海市",
+        "value": 158
+      },
+      {
+        "name": "北京市",
+        "value": 44
+      },
+      {
+        "name": "广东省",
+        "value": 24
+      },
+      {
+        "name": "江苏省",
+        "value": 21
+      },
+      {
+        "name": "辽宁省",
+        "value": 13
+      },
+      {
+        "name": "香港特别行政区",
+        "value": 10
+      },
+      {
+        "name": "江西省",
+        "value": 9
+      },
+      {
+        "name": "陕西省",
+        "value": 8
+      }
+    ],
+    "title": "地域热度排名"
+  },
+  "geography_summary": {
+    "total_regions": 30,
+    "top_region": "浙江省",
+    "top_region_count": 1601,
+    "region_coverage": {
+      "浙江省": 0.595,
+      "未知": 0.274,
+      "上海市": 0.059,
+      "北京市": 0.016,
+      "广东省": 0.009,
+      "江苏省": 0.008,
+      "辽宁省": 0.005,
+      "香港特别行政区": 0.004,
+      "江西省": 0.003,
+      "陕西省": 0.003,
+      "四川省": 0.003,
+      "安徽省": 0.003,
+      "湖南省": 0.003,
+      "河北省": 0.002,
+      "重庆市": 0.002,
+      "台湾省": 0.002,
+      "山西省": 0.002,
+      "云南省": 0.001,
+      "福建省": 0.001,
+      "河南省": 0.001,
+      "黑龙江省": 0.001,
+      "湖北省": 0.001,
+      "内蒙古自治区": 0.001,
+      "广西壮族自治区": 0.001,
+      "甘肃省": 0.0,
+      "吉林省": 0.0,
+      "贵州省": 0.0,
+      "青海省": 0.0,
+      "天津市": 0.0,
+      "新疆维吾尔自治区": 0.0
+    },
+    "unknown_region_count": 736,
+    "unknown_region_ratio": 0.27350427350427353
+  }
+}

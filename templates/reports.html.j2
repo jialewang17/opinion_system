@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topic }}舆情分析整合报告 - {{ date }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* 重置样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 设计系统变量 */
+        :root {
+            --color-primary: #3b82f6;
+            --color-primary-light: #60a5fa;
+            --color-secondary: #8b5cf6;
+            --color-accent: #f59e0b;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-400: #9ca3af;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-gray-900: #111827;
+            --color-bg-primary: #ffffff;
+            --color-bg-secondary: #f8fafc;
+            --color-bg-tertiary: #f1f5f9;
+            --color-text-primary: var(--color-gray-900);
+            --color-text-secondary: var(--color-gray-600);
+            --color-text-inverse: #ffffff;
+            --color-border-light: var(--color-gray-200);
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --font-family-sans: 'Inter', 'SF Pro Display', 'Segoe UI', 'Roboto', Arial, sans-serif;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            --text-5xl: 3rem;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+            --leading-normal: 1.5;
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 基础样式 */
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-family-sans);
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            color: var(--color-text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 主容器样式 */
+        .app-container {
+            min-height: 100vh;
+            padding: var(--space-6);
+        }
+        
+        /* 功能区域样式 */
+        .function-module {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--space-8);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .function-module::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+        }
+        
+        /* 头部样式 */
+        .module-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: var(--color-text-inverse);
+            padding: var(--space-8) var(--space-6);
+            text-align: center;
+            position: relative;
+        }
+        
+        .module-title {
+            font-size: var(--text-4xl);
+            font-weight: var(--font-bold);
+            margin: 0;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* 标签页导航 */
+        .tab-navigation {
+            background: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border-light);
+            padding: 0 var(--space-6);
+        }
+        
+        .tab-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            overflow-x: auto;
+        }
+        
+        .tab-item {
+            flex-shrink: 0;
+        }
+        
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: var(--space-4) var(--space-6);
+            color: var(--color-text-secondary);
+            font-size: var(--text-base);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-normal);
+            white-space: nowrap;
+            min-width: 140px;
+        }
+        
+        .tab-button.active {
+            background: var(--color-bg-primary);
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tab-button:hover:not(.active) {
+            color: var(--color-text-primary);
+            background: var(--color-bg-tertiary);
+        }
+        
+        /* 标签页内容 */
+        .tab-panel {
+            display: none;
+            padding: var(--space-6);
+            background: var(--color-bg-primary);
+            min-height: calc(100vh - 300px);
+        }
+        
+        .tab-panel.active {
+            display: block;
+        }
+        
+        /* 内容网格布局 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-6);
+            height: 100%;
+        }
+        
+        /* 面板样式 */
+        .content-panel {
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            border: 1px solid var(--color-border-light);
+            transition: all var(--transition-normal);
+        }
+        
+        .content-panel:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary-light);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 2px solid var(--color-border-light);
+        }
+        
+        .panel-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        .panel-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2) var(--space-4);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-success {
+            background: var(--color-success);
+            color: var(--color-text-inverse);
+        }
+        
+        .btn-secondary {
+            background: var(--color-gray-500);
+            color: var(--color-text-inverse);
+        }
+        
+        /* 图表包装器 - 统一大小 */
+        .chart-wrapper {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            height: 500px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border-light);
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+        
+        .chart-wrapper:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary-light);
+        }
+        
+        .chart-container {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            max-height: 100% !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 确保所有图表都在容器内 */
+        .chart-container > div {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+        }
+        
+        /* 渠道图表特殊样式 - 与总体保持一致 */
+        .chart-container[data-channel]:not([data-channel="总体"]) {
+            min-height: 0 !important;
+            height: 100% !important;
+        }
+        
+        /* 确保渠道图表容器有足够空间 */
+        .chart-wrapper:has(.chart-container[data-channel]:not([data-channel="总体"])) {
+            height: 500px !important;
+            min-height: 500px !important;
+        }
+        
+        /* 词云图样式 */
+        .wordcloud-wrapper {
+            text-align: center;
+            padding: var(--space-4);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .wordcloud-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            object-fit: contain;
+        }
+        
+        /* AI内容样式 - 统一大小 */
+        .ai-content {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            height: 500px;
+            overflow-y: auto;
+            line-height: var(--leading-normal);
+            font-size: var(--text-base);
+            border-left: 4px solid var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .ai-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .ai-content::-webkit-scrollbar-track {
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-sm);
+        }
+        
+        .ai-content::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: var(--radius-sm);
+        }
+        
+        /* Markdown样式支持 */
+        .ai-content h1, .ai-content h2, .ai-content h3, .ai-content h4, .ai-content h5, .ai-content h6 {
+            color: var(--color-primary);
+            margin: var(--space-3) 0 var(--space-2) 0;
+            font-weight: var(--font-bold);
+            line-height: 1.2;
+        }
+        
+        .ai-content h1 { 
+            font-size: var(--text-2xl); 
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: var(--space-2);
+            text-align: center;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .ai-content h2 { 
+            font-size: var(--text-xl); 
+            border-left: 3px solid var(--color-primary);
+            padding-left: var(--space-3);
+            background: var(--color-bg-tertiary);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+        }
+        
+        .ai-content h3 { 
+            font-size: var(--text-lg); 
+            color: var(--color-secondary);
+            border-bottom: 1px solid var(--color-border-light);
+            padding-bottom: var(--space-1);
+        }
+        
+        .ai-content h4, .ai-content h5, .ai-content h6 {
+            font-size: var(--text-base);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-3);
+        }
+        
+        /* 加粗文本样式 */
+        .ai-content strong, .ai-content b {
+            color: var(--color-text-primary);
+            font-weight: var(--font-semibold);
+            background: linear-gradient(120deg, #dbeafe 0%, #fef3c7 100%);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+        }
+        
+        /* 基本样式 */
+        .ai-content {
+            font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        /* 标题样式 */
+        .ai-content h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 16px 0 8px 0;
+            color: #2c3e50;
+        }
+        
+        .ai-content h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 14px 0 6px 0;
+            color: #34495e;
+        }
+        
+        .ai-content h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 12px 0 4px 0;
+            color: #7f8c8d;
+        }
+        
+        /* 移除br标签 */
+        .ai-content br {
+            display: none;
+        }
+        
+        /* 列表样式 */
+        .ai-content ul, .ai-content ol {
+            margin: var(--space-3) 0;
+            padding-left: var(--space-6);
+        }
+        
+        .ai-content li {
+            margin: var(--space-2) 0;
+            line-height: 1.6;
+        }
+        
+        /* 代码样式 */
+        .ai-content code {
+            background: var(--color-bg-tertiary);
+            color: var(--color-primary);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .ai-content pre {
+            background: var(--color-bg-tertiary);
+            padding: var(--space-3);
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            border-left: 3px solid var(--color-primary);
+        }
+        
+        /* 引用样式 */
+        .ai-content blockquote {
+            border-left: 4px solid var(--color-primary);
+            padding-left: var(--space-4);
+            margin: var(--space-4) 0;
+            font-style: italic;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-tertiary);
+            padding: var(--space-3);
+            border-radius: var(--radius-sm);
+        }
+        
+        /* 表格样式 */
+        .ai-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-4) 0;
+        }
+        
+        .ai-content th, .ai-content td {
+            border: 1px solid var(--color-border-light);
+            padding: var(--space-2);
+            text-align: left;
+        }
+        
+        .ai-content th {
+            background: var(--color-primary);
+            color: var(--color-text-inverse);
+            font-weight: var(--font-semibold);
+        }
+        
+        .ai-content tr:nth-child(even) {
+            background: var(--color-bg-tertiary);
+        }
+        
+        /* 强调样式 */
+        .ai-content em, .ai-content i {
+            font-style: italic;
+            color: var(--color-secondary);
+        }
+        
+        /* 水平分割线 */
+        .ai-content hr {
+            border: none;
+            border-top: 2px solid var(--color-border-light);
+            margin: var(--space-6) 0;
+        }
+        
+        /* 空状态样式 */
+        .empty-state {
+            text-align: center;
+            color: var(--color-gray-400);
+            padding: var(--space-8) var(--space-6);
+            font-style: italic;
+            font-size: var(--text-lg);
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--color-gray-300);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-4);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                padding: var(--space-4);
+            }
+            
+            .tab-navigation {
+                padding: 0 var(--space-4);
+            }
+            
+            .tab-button {
+                padding: var(--space-3) var(--space-4);
+                min-width: 120px;
+                font-size: var(--text-sm);
+            }
+            
+            .tab-panel {
+                padding: var(--space-4);
+            }
+            
+            .content-panel {
+                padding: var(--space-4);
+            }
+            
+            .chart-wrapper, .ai-content {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        {% for func_name, func_data in function_data.items() %}
+        <div class="function-module" data-function="{{ func_name }}">
+            <!-- 模块头部 -->
+            <header class="module-header">
+                <h1 class="module-title">{{ func_data.display_name }}</h1>
+            </header>
+            
+            <!-- 标签页导航 -->
+            <nav class="tab-navigation">
+                <ul class="tab-list">
+                    {% for channel_name, channel_data in func_data.channels.items() %}
+                    <li class="tab-item">
+                        <button 
+                            class="tab-button {% if loop.first %}active{% endif %}" 
+                            data-tab="{{ func_name }}-{{ channel_name }}"
+                            onclick="switchTab('{{ func_name }}', '{{ channel_name }}')"
+                        >
+                            {% if channel_name == "总体" %}
+                                🏠 {{ channel_data.display_name }}
+                            {% else %}
+                                📡 {{ channel_data.display_name }}
+                            {% endif %}
+                        </button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+            
+            <!-- 标签页内容 -->
+            {% for channel_name, channel_data in func_data.channels.items() %}
+            <div 
+                id="tab-{{ func_name }}-{{ channel_name }}" 
+                class="tab-panel {% if loop.first %}active{% endif %}"
+                data-channel="{{ channel_name }}"
+            >
+                <div class="content-grid">
+                    <!-- 图表面板 -->
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">📊 分析图表</h2>
+                            <div class="panel-actions">
+                                <button 
+                                    class="btn btn-success" 
+                                    onclick="downloadChart('{{ func_name }}-{{ channel_name }}')"
+                                    title="下载图表"
+                                >
+                                    📥 下载
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-wrapper">
+                            {% if channel_data.chart_html %}
+                                <!-- 统一图表处理逻辑 - 以总体为模板 -->
+                                {% if 'id="chart"' in channel_data.chart_html %}
+                                    <!-- ECharts图表 -->
+                                    <div 
+                                        id="chart-{{ func_name }}-{{ channel_name }}" 
+                                        class="chart-container"
+                                        data-type="echarts"
+                                        data-channel="{{ channel_name }}"
+                                        data-function="{{ func_name }}"
+                                    ></div>
+                                    
+                                    <script>
+                                        (function() {
+                                            const chartId = '{{ func_name }}-{{ channel_name }}';
+                                            const chartElement = document.getElementById('chart-' + chartId);
+                                            
+                                            if (!chartElement) {
+                                                console.warn('图表容器未找到:', chartId);
+                                                return;
+                                            }
+                                            
+                                            // 统一设置容器尺寸 - 所有图表都使用相同的尺寸
+                                            chartElement.style.width = '100%';
+                                            chartElement.style.height = '500px';
+                                            chartElement.style.minHeight = '500px';
+                                            
+                                            // 延迟初始化图表，确保容器完全渲染
+                                            setTimeout(function() {
+                                                try {
+                                                    // 检查ECharts是否已加载
+                                                    if (typeof echarts === 'undefined') {
+                                                        console.error('ECharts未加载，等待重试...');
+                                                        setTimeout(arguments.callee, 500);
+                                                        return;
+                                                    }
+                                                    
+                                                    // 再次确保容器尺寸
+                                                    chartElement.style.width = '100%';
+                                                    chartElement.style.height = '500px';
+                                                    chartElement.style.minHeight = '500px';
+                                                    
+                                                    // 提取图表配置
+                                                    {% set option_start = channel_data.chart_html.find('const option = ') %}
+                                                    {% if option_start > 0 %}
+                                                        {% set option_content = channel_data.chart_html[option_start + 14:channel_data.chart_html.find(';', option_start)] %}
+                                                        const option = {{ option_content | safe }};
+                                                        
+                                                        // 增强图表配置
+                                                        if (!option.toolbox) {
+                                                            option.toolbox = {};
+                                                        }
+                                                        option.toolbox.feature = {
+                                                            saveAsImage: {}
+                                                        };
+                                                        
+                                                        // 移除tooltip，避免鼠标悬停时出现矩形
+                                                        if (option.tooltip) {
+                                                            delete option.tooltip;
+                                                        }
+                                                        
+                                                        // 初始化图表
+                                                        const chart = echarts.init(chartElement);
+                                                        chart.setOption(option);
+                                                        
+                                                        // 立即调整大小
+                                                        chart.resize();
+                                                        
+                                                        // 响应式处理
+                                                        window.addEventListener('resize', () => chart.resize());
+                                                        
+                                                        // 存储图表实例
+                                                        if (window.app && window.app.charts) {
+                                                            window.app.charts.set(chartId, chart);
+                                                        }
+                                                        
+                                                        console.log('图表初始化成功:', chartId, '渠道:', '{{ channel_name }}');
+                                                        
+                                                        // 延迟再次调整大小，确保图表完全展开
+                                                        setTimeout(() => {
+                                                            chart.resize();
+                                                            console.log('图表延迟调整完成:', chartId);
+                                                        }, 200);
+                                                        
+                                                    {% else %}
+                                                        console.log('未找到图表配置:', chartId);
+                                                    {% endif %}
+                                                    
+                                                } catch (error) {
+                                                    console.error('图表初始化失败:', chartId, error);
+                                                }
+                                            }, 1000); // 延迟时间，确保容器完全展开
+                                        })();
+                                    </script>
+                                    
+                                {% elif func_name == 'keywords' %}
+                                    <!-- 关键词分析 - 直接使用PNG词云图 -->
+                                    {% if channel_name == "总体" %}
+                                        {% set img_path = '../processed/' + topic + '/' + date + '/keywords/总体/' + topic + '_' + date + '_wordcloud.png' %}
+                                    {% else %}
+                                        {% set img_path = '../processed/' + topic + '/' + date + '/keywords/' + channel_name + '/' + topic + '_' + date + '_wordcloud.png' %}
+                                    {% endif %}
+                                    
+                                    <div class="chart-container" data-channel="{{ channel_name }}" data-function="{{ func_name }}">
+                                        <div class="wordcloud-wrapper">
+                                            <img 
+                                                src="{{ img_path }}" 
+                                                alt="词云图 - {{ channel_data.display_name }}" 
+                                                class="wordcloud-image"
+                                                style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                                            >
+                                        </div>
+                                    </div>
+                                    
+                                {% else %}
+                                    <!-- 其他类型图表（主题、地域等） -->
+                                    {% if '<div id="chart">' in channel_data.chart_html %}
+                                        <div 
+                                            id="chart-{{ func_name }}-{{ channel_name }}" 
+                                            class="chart-container"
+                                            data-type="echarts"
+                                            data-channel="{{ channel_name }}"
+                                            data-function="{{ func_name }}"
+                                        ></div>
+                                        
+                                        <script>
+                                            (function() {
+                                                const chartId = '{{ func_name }}-{{ channel_name }}';
+                                                const chartElement = document.getElementById('chart-' + chartId);
+                                                
+                                                if (!chartElement) {
+                                                    console.warn('图表容器未找到:', chartId);
+                                                    return;
+                                                }
+                                                
+                                                // 统一设置容器尺寸 - 所有图表都使用相同的尺寸
+                                                chartElement.style.width = '100%';
+                                                chartElement.style.height = '500px';
+                                                chartElement.style.minHeight = '500px';
+                                                
+                                                // 延迟初始化图表，确保容器完全渲染
+                                                setTimeout(function() {
+                                                    try {
+                                                        // 检查ECharts是否已加载
+                                                        if (typeof echarts === 'undefined') {
+                                                            console.error('ECharts未加载，等待重试...');
+                                                            setTimeout(arguments.callee, 500);
+                                                            return;
+                                                        }
+                                                        
+                                                        // 再次确保容器尺寸
+                                                        chartElement.style.width = '100%';
+                                                        chartElement.style.height = '500px';
+                                                        chartElement.style.minHeight = '500px';
+                                                        
+                                                        // 提取图表配置
+                                                        {% set script_start = channel_data.chart_html.find('<script>') %}
+                                                        {% if script_start > 0 %}
+                                                            {% set script_end = channel_data.chart_html.find('</script>', script_start) %}
+                                                            {% if script_end > script_start %}
+                                                                {% set script_content = channel_data.chart_html[script_start + 8:script_end] %}
+                                                                {{ script_content | safe }}
+                                                                
+                                                                // 初始化图表
+                                                                const chart = echarts.init(chartElement);
+                                                                chart.setOption(option);
+                                                                
+                                                                // 立即调整大小
+                                                                chart.resize();
+                                                                
+                                                                // 响应式处理
+                                                                window.addEventListener('resize', () => chart.resize());
+                                                                
+                                                                // 存储图表实例
+                                                                if (window.app && window.app.charts) {
+                                                                    window.app.charts.set(chartId, chart);
+                                                                }
+                                                                
+                                                                console.log('其他图表初始化成功:', chartId, '渠道:', '{{ channel_name }}');
+                                                                
+                                                                // 延迟再次调整大小，确保图表完全展开
+                                                                setTimeout(() => {
+                                                                    chart.resize();
+                                                                    console.log('其他图表延迟调整完成:', chartId);
+                                                                    
+
+                                                                }, 200);
+                                                                
+                                                            {% else %}
+                                                                console.log('未找到脚本结束标签:', chartId);
+                                                            {% endif %}
+                                                        {% else %}
+                                                            console.log('未找到脚本开始标签:', chartId);
+                                                        {% endif %}
+                                                        
+                                                    } catch (error) {
+                                                        console.error('其他图表初始化失败:', chartId, error);
+                                                    }
+                                                }, 1000); // 延迟时间，确保容器完全展开
+                                            })();
+                                        </script>
+                                    {% else %}
+                                        <div class="chart-container" data-channel="{{ channel_name }}" data-function="{{ func_name }}">
+                                            {{ channel_data.chart_html | safe }}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <div class="empty-state">
+                                    <p>暂无图表数据</p>
+                                    <small>渠道: {{ channel_data.display_name }}</small>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- AI解读面板 -->
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">🤖 AI专业解读</h2>
+                            <div class="panel-actions">
+                                <button 
+                                    class="btn btn-secondary" 
+                                    onclick="copyText('{{ func_name }}-{{ channel_name }}')"
+                                    title="复制文本"
+                                >
+                                    📋 复制
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-content" id="ai-{{ func_name }}-{{ channel_name }}">
+                            {% if channel_data.ai_text %}
+                                <div class="markdown-content">
+                                    {{ channel_data.ai_text | safe }}
+                                </div>
+                            {% else %}
+                                <div class="empty-state">暂无AI解读内容</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+
+        
+        // 应用主类
+        class OpinionReportApp {
+            constructor() {
+                this.currentTab = null;
+                this.charts = new Map();
+                this.init();
+            }
+            
+            init() {
+                console.log('🎉 舆情分析报告应用初始化完成');
+                this.bindEvents();
+                this.setupResizeObserver();
+                this.processAllMarkdown();
+            }
+            
+            bindEvents() {
+                // 标签页切换事件
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('tab-button')) {
+                        const funcName = e.target.closest('.function-module').dataset.function;
+                        const channelName = e.target.dataset.tab.split('-')[1];
+                        this.switchTab(funcName, channelName, e.target);
+                    }
+                });
+                
+                // 窗口大小变化
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        this.handleResize();
+                    }, 300);
+                });
+            }
+            
+            switchTab(funcName, channelName, buttonElement) {
+                const functionModule = buttonElement.closest('.function-module');
+                const tabId = `${funcName}-${channelName}`;
+                
+                // 更新按钮和面板
+                functionModule.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                buttonElement.classList.add('active');
+                functionModule.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+                
+                const targetPanel = document.getElementById(`tab-${tabId}`);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    
+                    // 等容器展开后再 resize
+                    setTimeout(() => {
+                        this.resizeChartInPanel(targetPanel);
+                    }, 300);
+                }
+                
+                this.currentTab = tabId;
+                console.log('切换到标签页:', tabId);
+            }
+            
+            resizeChartInPanel(panel) {
+                console.log('开始调整面板中的图表:', panel.id);
+                
+                // 查找所有图表容器并调整大小
+                const chartContainers = panel.querySelectorAll('.chart-container[data-type="echarts"]');
+                chartContainers.forEach((container, index) => {
+                    const chart = echarts.getInstanceByDom(container);
+                    if (chart) {
+                        // 强制设置容器尺寸
+                        container.style.width = '100%';
+                        container.style.height = '500px';
+                        container.style.minHeight = '500px';
+                        
+                        // 延迟调整图表大小
+                        setTimeout(() => {
+                            chart.resize();
+                            console.log(`图表 ${index + 1} 调整完成:`, container.dataset.function, container.dataset.channel);
+                        }, index * 50);
+                    }
+                });
+            }
+            
+            handleResize() {
+                console.log('窗口大小变化，调整图表');
+                this.charts.forEach(chart => {
+                    if (chart && chart.resize) {
+                        chart.resize();
+                    }
+                });
+            }
+            
+            setupResizeObserver() {
+                if (window.ResizeObserver) {
+                    const observer = new ResizeObserver(entries => {
+                        entries.forEach(entry => {
+                            const container = entry.target;
+                            const chart = echarts.getInstanceByDom(container);
+                            if (chart) {
+                                // 检查容器是否真正展开（有实际尺寸）
+                                const rect = container.getBoundingClientRect();
+                                if (rect.width > 0 && rect.height > 0) {
+                                    chart.resize();
+                                    console.log("容器展开 -> 图表 resize:", container.dataset.function, container.dataset.channel, "尺寸:", rect.width, "x", rect.height);
+                                }
+                            }
+                        });
+                    });
+                    
+                    // 直接观察每个 chart-container
+                    document.querySelectorAll('.chart-container[data-type="echarts"]').forEach(container => {
+                        observer.observe(container);
+                    });
+                    
+                    console.log('ResizeObserver 已设置，监听图表容器尺寸变化');
+                }
+            }
+            
+            processAllMarkdown() {
+                // 先测试Markdown解析功能
+                testMarkdownParsing();
+                
+                // 处理所有AI内容中的Markdown文本
+                const aiContents = document.querySelectorAll('.ai-content .markdown-content');
+                aiContents.forEach(content => {
+                    if (content.textContent) {
+                        console.log('原始文本:', content.textContent.substring(0, 200) + '...');
+                        const processedText = processMarkdownText(content.textContent);
+                        console.log('处理后文本:', processedText.substring(0, 200) + '...');
+                        content.innerHTML = processedText;
+                        
+                        // 额外清理：移除所有空行和空段落
+                        this.cleanupEmptyElements(content);
+                    }
+                });
+                console.log('Markdown文本处理完成');
+            }
+            
+            cleanupEmptyElements(container) {
+                // 移除所有br标签
+                const brElements = container.querySelectorAll('br');
+                brElements.forEach(br => br.remove());
+                
+                console.log('清理完成');
+            }
+        }
+        
+        // 测试Markdown解析
+        function testMarkdownParsing() {
+            const testText = `# 测试标题1
+## 测试标题2
+### 测试标题3
+
+这是一段测试文本，包含**加粗文本**和*斜体文本*。
+
+- 列表项1
+- 列表项2
+
+1. 有序列表1
+2. 有序列表2`;
+
+            console.log('测试Markdown解析:');
+            console.log('原始文本:', testText);
+            const result = processMarkdownText(testText);
+            console.log('解析结果:', result);
+        }
+
+        // 简化的标题处理函数
+        function processMarkdownText(text) {
+            if (!text) return '';
+            
+            // 移除开头的标题行（如 "# 控烟舆情重点议题分析报告"）
+            let processedText = text.replace(/^#\s+.*?\n/, '');
+            
+            // 只处理标题层级 - # ## ###
+            processedText = processedText.replace(/^(#{1,3})\s+(.+)$/gm, function(match, hashes, content) {
+                const level = hashes.length;
+                return `<h${level}>${content}</h${level}>`;
+            });
+            
+            // 移除所有换行符，保持文本连续
+            processedText = processedText.replace(/\n/g, '');
+            
+            return processedText;
+        }
+        
+        // 工具函数
+        function downloadChart(chartId) {
+            const chartContainer = document.querySelector(`[onclick="downloadChart('${chartId}')"]`)
+                .closest('.content-panel')
+                .querySelector('.chart-wrapper');
+            
+            const chartElement = chartContainer.querySelector('canvas') || 
+                               chartContainer.querySelector('.chart-container');
+            
+            if (chartElement) {
+                try {
+                    if (typeof html2canvas !== 'undefined') {
+                        html2canvas(chartElement).then(canvas => {
+                            const link = document.createElement('a');
+                            link.download = `${chartId}_图表.png`;
+                            link.href = canvas.toDataURL();
+                            link.click();
+                        });
+                    } else {
+                        const htmlContent = chartElement.outerHTML;
+                        const blob = new Blob([htmlContent], { type: 'text/html' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.download = `${chartId}_图表.html`;
+                        link.href = url;
+                        link.click();
+                        URL.revokeObjectURL(url);
+                    }
+                } catch (error) {
+                    console.error('下载失败:', error);
+                    alert('下载失败，请检查图表内容');
+                }
+            }
+        }
+        
+        function copyText(chartId) {
+            const aiContent = document.querySelector(`[onclick="copyText('${chartId}')"]`)
+                .closest('.content-panel')
+                .querySelector('.ai-content');
+            
+            const text = aiContent.innerText || aiContent.textContent;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopySuccess(chartId);
+                }).catch(err => {
+                    fallbackCopyText(text, chartId);
+                });
+            } else {
+                fallbackCopyText(text, chartId);
+            }
+        }
+        
+        function fallbackCopyText(text, chartId) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopySuccess(chartId);
+            } catch (err) {
+                alert('复制失败，请手动选择文本复制');
+            }
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopySuccess(chartId) {
+            const copyBtn = document.querySelector(`[onclick="copyText('${chartId}')"]`);
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ 已复制';
+            copyBtn.style.background = 'var(--color-success)';
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = '';
+            }, 2000);
+        }
+        
+        // 全局函数兼容
+        function switchTab(funcName, channelName) {
+            if (window.app) {
+                const button = document.querySelector(`[data-tab="${funcName}-${channelName}"]`);
+                if (button) {
+                    window.app.switchTab(funcName, channelName, button);
+                }
+            }
+        }
+        
+        // 渠道图表特殊处理函数
+        function initializeChannelCharts() {
+            // 延迟初始化所有渠道图表
+            setTimeout(() => {
+                const channelCharts = document.querySelectorAll('.chart-container[data-channel][data-channel!="总体"]');
+                channelCharts.forEach(container => {
+                    const chartId = container.id;
+                    const channelName = container.dataset.channel;
+                    const funcName = container.dataset.function;
+                    
+                    console.log('初始化渠道图表:', funcName, channelName);
+                    
+                    // 强制调整容器大小
+                    if (container.offsetHeight < 400) {
+                        container.style.height = '500px';
+                        container.style.minHeight = '500px';
+                    }
+                    
+                    // 查找并调整对应的图表
+                    const chart = echarts.getInstanceByDom(container);
+                    if (chart) {
+                        chart.resize();
+                        console.log('渠道图表调整完成:', chartId);
+                    }
+                });
+            }, 1000); // 延迟1秒，确保所有内容完全加载
+        }
+        
+        // 应用初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            window.app = new OpinionReportApp();
+            
+            // 初始化渠道图表
+            initializeChannelCharts();
+            
+            // 监听标签页切换，确保渠道图表正确显示
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tab-button')) {
+                    setTimeout(() => {
+                        initializeChannelCharts();
+                    }, 300);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

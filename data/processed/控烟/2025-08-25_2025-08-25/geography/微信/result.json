@@ -1,0 +1,127 @@
+{
+  "total_count": 323,
+  "region_distribution": {
+    "type": "map",
+    "data": [
+      {
+        "name": "浙江省",
+        "value": 237
+      },
+      {
+        "name": "未知",
+        "value": 36
+      },
+      {
+        "name": "上海市",
+        "value": 22
+      },
+      {
+        "name": "辽宁省",
+        "value": 6
+      },
+      {
+        "name": "北京市",
+        "value": 4
+      },
+      {
+        "name": "香港特别行政区",
+        "value": 3
+      },
+      {
+        "name": "河北省",
+        "value": 3
+      },
+      {
+        "name": "江苏省",
+        "value": 2
+      },
+      {
+        "name": "青海省",
+        "value": 1
+      },
+      {
+        "name": "内蒙古自治区",
+        "value": 1
+      },
+      {
+        "name": "四川省",
+        "value": 1
+      },
+      {
+        "name": "广东省",
+        "value": 1
+      },
+      {
+        "name": "湖北省",
+        "value": 1
+      },
+      {
+        "name": "黑龙江省",
+        "value": 1
+      },
+      {
+        "name": "天津市",
+        "value": 1
+      },
+      {
+        "name": "河南省",
+        "value": 1
+      },
+      {
+        "name": "江西省",
+        "value": 1
+      },
+      {
+        "name": "湖南省",
+        "value": 1
+      }
+    ],
+    "title": "地域分布"
+  },
+  "region_ranking": {
+    "type": "bar",
+    "data": [
+      {
+        "name": "浙江省",
+        "value": 237
+      },
+      {
+        "name": "未知",
+        "value": 36
+      },
+      {
+        "name": "上海市",
+        "value": 22
+      },
+      {
+        "name": "辽宁省",
+        "value": 6
+      },
+      {
+        "name": "北京市",
+        "value": 4
+      },
+      {
+        "name": "香港特别行政区",
+        "value": 3
+      },
+      {
+        "name": "河北省",
+        "value": 3
+      },
+      {
+        "name": "江苏省",
+        "value": 2
+      },
+      {
+        "name": "青海省",
+        "value": 1
+      },
+      {
+        "name": "内蒙古自治区",
+        "value": 1
+      }
+    ],
+    "title": "地域热度排名"
+  }
+}
