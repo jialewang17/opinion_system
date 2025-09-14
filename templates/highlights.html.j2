@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重点议题排行</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .highlight-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .highlight-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .rank {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #007bff;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .highlight-text {
+            margin-left: 15px;
+            line-height: 1.5;
+            color: #333;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        .highlight-text.editing {
+            background: #fff;
+            border: 2px solid #007bff;
+            border-radius: 4px;
+            padding: 8px;
+            outline: none;
+        }
+        @media (max-width: 768px) {
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">🏆 重点议题排行</div>
+        <div class="highlights-grid">
+            {% for highlight in highlights %}
+            <div class="highlight-item" data-rank="{{ loop.index }}">
+                <div class="rank">{{ loop.index }}</div>
+                <div class="highlight-text" contenteditable="false">{{ highlight }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <script>
+        // 双击编辑功能
+        document.querySelectorAll('.highlight-text').forEach(function(element) {
+            element.addEventListener('dblclick', function() {
+                if (this.getAttribute('contenteditable') === 'false') {
+                    this.setAttribute('contenteditable', 'true');
+                    this.classList.add('editing');
+                    this.focus();
+                    
+                    // 选中文本
+                    const range = document.createRange();
+                    range.selectNodeContents(this);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            });
+            
+            element.addEventListener('blur', function() {
+                this.setAttribute('contenteditable', 'false');
+                this.classList.remove('editing');
+            });
+            
+            element.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+                if (e.key === 'Escape') {
+                    this.textContent = this.getAttribute('data-original') || this.textContent;
+                    this.blur();
+                }
+            });
+            
+            // 保存原始内容
+            element.setAttribute('data-original', element.textContent);
+        });
+    </script>
+</body>
+</html>

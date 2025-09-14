@@ -1,3 +1,4 @@
+# 筛选保存的渠道sheet
 keep:
   - "自媒体号"
   - "微信"
@@ -8,6 +9,7 @@ keep:
   - "电子报"
   - "论坛"
 
+# 列字段映射
 field_alias:
   title: ["标题"]
   summary: ["摘要"]
@@ -21,12 +23,6 @@ field_alias:
   hit_words: ["命中词", "关键词"]
   polarity: ["倾向性", "情感"]
 
-time:
-  tz: "Asia/Shanghai"
-  formats:
-    - "%Y-%m-%d %H:%M:%S"
-    - "%Y/%m/%d %H:%M"
-    - "%Y-%m-%d"
-
+# 分析时对渠道进行的合并
 merge_for_analysis:
   新闻: ["电子报", "新闻app", "新闻网站"]

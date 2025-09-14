@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "name": "鲁迅",
+      "value": 36
+    },
+    {
+      "name": "纪念馆",
+      "value": 15
+    },
+    {
+      "name": "投诉",
+      "value": 11
+    },
+    {
+      "name": "墙画",
+      "value": 11
+    },
+    {
+      "name": "绍兴",
+      "value": 11
+    },
+    {
+      "name": "禁烟",
+      "value": 9
+    },
+    {
+      "name": "游客",
+      "value": 8
+    },
+    {
+      "name": "青少年",
+      "value": 8
+    },
+    {
+      "name": "版画",
+      "value": 8
+    },
+    {
+      "name": "抽烟",
+      "value": 8
+    },
+    {
+      "name": "误导",
+      "value": 7
+    },
+    {
+      "name": "浙江",
+      "value": 7
+    },
+    {
+      "name": "建议",
+      "value": 7
+    },
+    {
+      "name": "右手",
+      "value": 7
+    },
+    {
+      "name": "握拳",
+      "value": 7
+    },
+    {
+      "name": "回应",
+      "value": 5
+    },
+    {
+      "name": "绍兴市",
+      "value": 5
+    },
+    {
+      "name": "换成",
+      "value": 5
+    },
+    {
+      "name": "夹烟",
+      "value": 4
+    },
+    {
+      "name": "更换",
+      "value": 4
+    }
+  ]
+}

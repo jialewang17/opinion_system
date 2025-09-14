@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "name": "neutral",
+      "value": 8
+    },
+    {
+      "name": "negative",
+      "value": 1
+    }
+  ]
+}

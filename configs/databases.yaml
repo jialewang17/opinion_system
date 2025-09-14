@@ -1,0 +1,2 @@
+# 云服务器mysql地址
+db_url: "mysql+pymysql://remote:w13135365248%25@101.43.204.229:3306"

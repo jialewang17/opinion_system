@@ -5,7 +5,7 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List
 from ..utils.paths import bucket
-from ..utils.logging import setup_logger, log_module_start, log_success, log_error, log_save_success
+from ..utils.logging import setup_logger, log_error, log_save_success
 from ..utils.settings import settings
 
 def _collect_excel_files(raw_dir: Path) -> List[Path]:
@@ -54,17 +54,14 @@ def merge_folder(raw_dir: Path, staging_dir: Path, logger=None) -> Path:
     if logger is None:
         logger = setup_logger("default", "default")
 
-    log_module_start(logger, "TRS Excel合并")
-
     # 读取渠道白名单（channels.yaml -> keep）。若未配置则不过滤
     channel_config = settings.get_channel_config()
     keep_channels = set(channel_config.get('keep', []) or [])
-    if keep_channels:
-        logger.info(f"📋 渠道白名单: {len(keep_channels)} 个")
 
     excel_files = _collect_excel_files(raw_dir)
+
     if not excel_files:
-        log_error(logger, f"在 {raw_dir} 中未找到 Excel 文件")
+        log_error(logger, f"在 {raw_dir} 中未找到 Excel 文件", "Merge")
         return None
 
     # sheet_name -> list[pd.DataFrame]
@@ -72,13 +69,11 @@ def merge_folder(raw_dir: Path, staging_dir: Path, logger=None) -> Path:
 
     for file_path in excel_files:
         try:
-            logger.info(f"扫描工作表: {file_path.name}")
             xl = pd.ExcelFile(file_path)
             for sheet_name in xl.sheet_names:
                 try:
                     # 若配置了白名单且当前工作表不在其中，则跳过
                     if keep_channels and sheet_name not in keep_channels:
-                        logger.info(f"跳过工作表（不在keep中）: {sheet_name}")
                         continue
                     df = xl.parse(sheet_name)
                     if df is None or df.empty:
@@ -89,14 +84,14 @@ def merge_folder(raw_dir: Path, staging_dir: Path, logger=None) -> Path:
                         sheet_to_frames[sheet_name] = []
                     sheet_to_frames[sheet_name].append(df)
                 except Exception as e:
-                    logger.error(f"读取 {file_path.name} 的工作表 {sheet_name} 失败: {e}")
+                    log_error(logger, f"读取 {file_path.name} 的工作表 {sheet_name} 失败: {e}", "Merge")
                     continue
         except Exception as e:
-            logger.error(f"打开 Excel {file_path.name} 失败: {e}")
+            log_error(logger, f"打开 Excel {file_path.name} 失败: {e}", "Merge")
             continue
 
     if not sheet_to_frames:
-        log_error(logger, "未从任何文件读取到有效工作表数据")
+        log_error(logger, "未从任何文件读取到有效工作表数据", "Merge")
         return None
 
     staging_dir.mkdir(parents=True, exist_ok=True)
@@ -115,18 +110,16 @@ def merge_folder(raw_dir: Path, staging_dir: Path, logger=None) -> Path:
             safe_name = _safe_filename(sheet_name)
             output_excel = staging_dir / f"{safe_name}.xlsx"
             merged.to_excel(output_excel, sheet_name=sheet_name[:31], index=False)
-            log_save_success(logger, f"{sheet_name} ({len(merged)} 条)")
+            log_save_success(logger, f"{sheet_name} -- 共{len(merged)}条", "Merge")
             output_files.append(output_excel)
         except Exception as e:
-            log_error(logger, f"合并/写入工作表 {sheet_name} 失败: {e}")
+            log_error(logger, f"合并/写入工作表 {sheet_name} 失败: {e}", "Merge")
             continue
 
-    if output_files:
-        log_success(logger, f"导出 {len(output_files)} 个文件到 {staging_dir}")
-        # 返回目录路径以表明成功
+    if output_files:        # 返回目录路径以表明成功
         return staging_dir
     else:
-        log_error(logger, "没有任何工作表成功导出")
+        log_error(logger, "没有任何工作表成功导出", "Merge")
         return None
 
 def merge_trs_data(topic: str, date: str, logger=None) -> Path:

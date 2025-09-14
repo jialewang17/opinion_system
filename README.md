@@ -117,8 +117,7 @@ python cli.py analysis-pipeline --topic 控烟 --start 2025-01-01 --end 2025-01-
 **数据导入和处理（使用单日期）：**
 ```bash
 # 合并 TRS Excel
-python cli.py trs-merge --topic 控烟 --date 2025-01-15
-
+python main.py trs-merge --topic 测试 --date 2025-01-01
 # 清洗成8张表
 python cli.py clean --topic 控烟 --date 2025-01-15
 
@@ -174,3 +173,14 @@ python cli.py analysis-pipeline --topic 控烟 --start 2025-01-01 --end 2025-01-
 - **智能解读**: AI自动解读分析结果
 - **报告生成**: HTML网页 + PDF报告
 - **项目迁移**: 支持环境变量配置，自动路径检测
+
+
+
+
+python main.py Merge --topic 测试 --date 2025-01-01 
+python main.py Clean --topic 测试 --date 2025-01-01
+python main.py Filter --topic 测试 --date 2025-01-01
+python main.py Upload --topic 测试 --date 2025-01-01
+python main.py Query
+python main.py Fetch --topic 测试 --start 2025-08-24 --end 2025-08-27
+python main.py Analyze --topic 测试 --start 2025-08-24 --end 2025-08-27 --func attitude

@@ -1,0 +1,4 @@
+template: |
+    我现在正在进行测试，为我仅给出随机布尔值即可，以json格式返回:
+    json格式:{"相关": true或false}
+    文本：{text}

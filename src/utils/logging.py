@@ -2,7 +2,6 @@
 统一日志管理模块
 """
 import logging
-import os
 from pathlib import Path
 from typing import Optional
 from .paths import get_logs_root
@@ -21,7 +20,7 @@ class ColoredFormatter(logging.Formatter):
     
     def format(self, record):
         """
-        格式化日志记录
+        格式化日志记录，遵循cursorrules格式
         
         Args:
             record: 日志记录
@@ -29,9 +28,12 @@ class ColoredFormatter(logging.Formatter):
         Returns:
             str: 格式化后的日志消息
         """
-        # 添加颜色
-        if hasattr(record, 'color'):
-            record.msg = f"{self.COLORS.get(record.color, '')}{record.msg}{self.COLORS['RESET']}"
+        # 按照cursorrules格式: [module]-success|fail + 简洁的操作描述
+        if hasattr(record, 'module') and hasattr(record, 'status'):
+            # success 标记为绿色，fail 标记为红色
+            color_code = self.COLORS['SUCCESS'] if record.status == 'success' else self.COLORS['ERROR']
+            formatted_msg = f"[{record.module}]-{record.status} {record.msg}"
+            return f"{color_code}{formatted_msg}{self.COLORS['RESET']}"
         
         return super().format(record)
 
@@ -83,63 +85,70 @@ def setup_logger(topic: str, date: str, log_level: str = "INFO") -> logging.Logg
     return logger
 
 
-def log_module_start(logger: logging.Logger, module_name: str):
+def log_success(logger: logging.Logger, message: str, module: str):
     """
-    打印模块开始标识
-    
-    Args:
-        logger (logging.Logger): 日志记录器
-        module_name (str): 模块名称
-    """
-    logger.info(f"🚀 {module_name}")
-
-
-def log_success(logger: logging.Logger, message: str):
-    """
-    打印成功信息（绿色）
+    打印成功信息，遵循cursorrules格式
     
     Args:
         logger (logging.Logger): 日志记录器
         message (str): 成功消息
+        module (str): 模块名称
     """
     record = logger.makeRecord('success', logging.INFO, '', 0, message, (), None)
-    record.color = 'SUCCESS'
+    record.module = module
+    record.status = 'success'
     logger.handle(record)
 
 
-def log_error(logger: logging.Logger, message: str):
+def log_error(logger: logging.Logger, message: str, module: str):
     """
-    打印错误信息（红色）
+    打印错误信息，遵循cursorrules格式
     
     Args:
         logger (logging.Logger): 日志记录器
         message (str): 错误消息
+        module (str): 模块名称
     """
     record = logger.makeRecord('error', logging.ERROR, '', 0, message, (), None)
-    record.color = 'ERROR'
+    record.module = module
+    record.status = 'fail'
     logger.handle(record)
 
 
-def log_save_success(logger: logging.Logger, file_path: str):
+def log_module_start(logger: logging.Logger, module: str, action: str = "模块运行"):
+    """
+    打印模块开始信息，不显示success状态
+    
+    Args:
+        logger (logging.Logger): 日志记录器
+        module (str): 模块名称
+        action (str): 操作描述
+    """
+    logger.info(f"[{module}] {action}")
+
+
+def log_save_success(logger: logging.Logger, file_path: str, module: str):
     """
     打印保存成功信息
     
     Args:
         logger (logging.Logger): 日志记录器
         file_path (str): 文件路径
+        module (str): 模块名称
     """
-    logger.info(f"✅ 已保存: {file_path}")
+    log_success(logger, f"成功保存: {file_path}", module)
 
 
-def log_skip(logger: logging.Logger, reason: str):
+def log_skip(logger: logging.Logger, reason: str, module: str):
     """
     打印跳过信息
     
     Args:
         logger (logging.Logger): 日志记录器
         reason (str): 跳过原因
+        module (str): 模块名称
     """
-    logger.info(f"⏭️  跳过: {reason}")
+    logger.info(f"[{module}] 跳过: {reason}")
 
 
 def get_logs_directory() -> Path:
@@ -150,34 +159,3 @@ def get_logs_directory() -> Path:
         Path: 日志目录路径
     """
     return get_logs_root()
-
-
-def cleanup_old_logs(days_to_keep: int = 30) -> None:
-    """
-    清理旧日志文件
-    
-    Args:
-        days_to_keep (int, optional): 保留天数，默认30天
-    """
-    import time
-    from datetime import datetime, timedelta
-    
-    logs_root = get_logs_root()
-    if not logs_root.exists():
-        return
-    
-    cutoff_time = time.time() - (days_to_keep * 24 * 60 * 60)
-    cleaned_count = 0
-    
-    for log_file in logs_root.rglob("*.log"):
-        try:
-            if log_file.stat().st_mtime < cutoff_time:
-                log_file.unlink()
-                cleaned_count += 1
-        except Exception as e:
-            print(f"❌ 删除旧日志文件失败 {log_file}: {e}")
-    
-    if cleaned_count > 0:
-        print(f"🧹 已清理 {cleaned_count} 个旧日志文件")
-    else:
-        print("✨ 没有需要清理的旧日志文件")

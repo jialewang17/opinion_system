@@ -5,8 +5,8 @@ import pandas as pd
 import hashlib
 from pathlib import Path
 from typing import Optional, List, Dict, Any
-from ..utils.paths import bucket
-from ..utils.logging import setup_logger
+from ..utils.paths import bucket, ensure_bucket
+from ..utils.logging import setup_logger, log_success, log_error, log_skip
 from ..utils.settings import settings
 from .db import db_manager
 from .excel import write_csv, write_parquet, read_excel
@@ -45,21 +45,21 @@ def upload_cleaned(topic: str, date: str, logger=None) -> bool:
     """
     if logger is None:
         logger = setup_logger(topic, date)
-    
-    logger.info(f"开始上传清洗后的数据到数据库")
+
+    log_success(logger, "开始上传清洗后的数据到数据库", "Warehouse")
     
     clean_dir = bucket("clean", topic, date)
     clean_files = list(clean_dir.glob("*.parquet"))
     
     if not clean_files:
-        logger.warning("未找到清洗后的数据文件")
+        log_error(logger, "未找到清洗后的数据文件", "Upload")
         return False
     
     success_count = 0
     
     for file_path in clean_files:
         channel = file_path.stem
-        logger.info(f"正在处理渠道: {channel}")
+        log_success(logger, f"正在处理渠道: {channel}", "Warehouse")
         
         try:
             # 读取数据
@@ -125,13 +125,13 @@ def upload_cleaned(topic: str, date: str, logger=None) -> bool:
                     db_manager.execute_update(sql, params)
             
             success_count += 1
-            logger.info(f"渠道 {channel} 数据上传完成，记录数: {len(df)}")
-            
+            log_success(logger, f"渠道 {channel} 数据上传完成，记录数: {len(df)}", "Warehouse")
+
         except Exception as e:
-            logger.error(f"处理渠道 {channel} 失败: {e}")
+            log_error(logger, f"处理渠道 {channel} 失败: {e}", "Warehouse")
             continue
-    
-    logger.info(f"数据上传完成，成功渠道数: {success_count}/{len(clean_files)}")
+
+    log_success(logger, f"数据上传完成，成功渠道数: {success_count}/{len(clean_files)}", "Warehouse")
     return success_count > 0
 
 def upload_filtered_excels(topic: str, date: str, logger=None) -> bool:
@@ -143,19 +143,16 @@ def upload_filtered_excels(topic: str, date: str, logger=None) -> bool:
     """
     if logger is None:
         logger = setup_logger(topic, date)
-
-    logger.info("开始按 filtered Excel 上传至数据库：按专题建库，按文件建表")
-
     # 1. 定位目录与文件
     filtered_dir = bucket("filtered", topic, date)
     excel_files = list(filtered_dir.glob("*.xlsx"))
     if not excel_files:
-        logger.warning("未在 filtered 目录找到 Excel 文件")
+        log_error(logger, "未在 filtered 目录找到 Excel 文件", "Upload")
         return False
 
     # 2. 确保数据库存在
     if not db_manager.ensure_database(topic):
-        logger.error(f"创建或确认数据库 {topic} 失败")
+        log_error(logger, f"创建或确认数据库 {topic} 失败", "Upload")
         return False
 
     # 使用指向该数据库的独立引擎
@@ -229,12 +226,11 @@ def upload_filtered_excels(topic: str, date: str, logger=None) -> bool:
     with engine.begin() as conn:
         for file_path in excel_files:
             table_name = file_path.stem
-            logger.info(f"处理文件 {file_path.name} -> 表 {table_name}")
 
             try:
                 df = read_excel(file_path)
                 if df is None or len(df) == 0:
-                    logger.warning(f"{file_path.name} 无数据，跳过")
+                    log_skip(logger, f"{file_path.name} 无数据，跳过", "Warehouse")
                     continue
 
                 df = _sanitize_columns(df)
@@ -251,23 +247,20 @@ def upload_filtered_excels(topic: str, date: str, logger=None) -> bool:
                             column_defs.append(f"`{col}` {mysql_type}")
                     create_sql = f"CREATE TABLE IF NOT EXISTS `{table_name}` ({', '.join(column_defs)}) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
                     conn.execute(text(create_sql))
-                    logger.info(f"已创建表 {topic}.{table_name}")
+                    log_success(logger, f"已创建表 {topic}.{table_name}", "Upload")
                 else:
-                    logger.info(f"表 {topic}.{table_name} 已存在，准备追加数据")
                     # 表已存在，尝试为 id 添加主键或索引
                     if 'id' in df.columns:
                         try:
                             conn.execute(text(f"ALTER TABLE `{table_name}` ADD PRIMARY KEY (`id`)"))
-                            logger.info(f"为 {topic}.{table_name} 添加主键(id)")
                         except Exception:
                             try:
                                 conn.execute(text(f"ALTER TABLE `{table_name}` ADD INDEX `idx_id` (`id`)"))
-                                logger.info(f"为 {topic}.{table_name} 添加索引 idx_id(id)")
                             except Exception:
                                 pass
 
             except Exception as e:
-                logger.error(f"读取或建表步骤失败（{file_path.name}）: {e}")
+                log_error(logger, f"读取或建表步骤失败（{file_path.name}）: {e}", "Warehouse")
                 continue
 
     # 4. 使用 pandas.to_sql 追加数据（分批）；若存在 id 列，则在插入前去重并设置为索引
@@ -284,19 +277,18 @@ def upload_filtered_excels(topic: str, date: str, logger=None) -> bool:
                 df = df.drop_duplicates(subset=['id'])
                 after = len(df)
                 if after < before:
-                    logger.info(f"{file_path.name} 按 id 去重：{before} -> {after}")
+                    log_success(logger, f"{file_path.name} 按 id 去重：{before} -> {after}", "Warehouse")
             # to_sql 会在表不存在时尝试创建，因此我们已先手动创建保证字段类型
             df.to_sql(table_name, con=engine, if_exists='append', index=False, method='multi', chunksize=1000)
             success_tables += 1
             # 简单的格式校验日志
             non_null_ratio = (df.notnull().sum() / len(df)).mean()
-            logger.info(f"表 {topic}.{table_name} 上传完成，行数={len(df)}，非空占比≈{non_null_ratio:.2f}")
+            log_success(logger, f"上传成功：{topic}.{table_name} -- 共{len(df)}条", "Upload")
         except Exception as e:
-            logger.error(f"上传表 {topic}.{table_name} 失败（源文件 {file_path.name}）: {e}")
+            log_error(logger, f"上传表 {topic}.{table_name} 失败（源文件 {file_path.name}）: {e}", "Upload")
             continue
 
     engine.dispose()
-    logger.info(f"完成：成功上传 {success_tables}/{len(excel_files)} 个 Excel 到 {topic} 库")
     return success_tables > 0
 
 def fetch_range(topic: str, start_date: str, end_date: str, output_date: str, logger=None) -> bool:
@@ -316,23 +308,22 @@ def fetch_range(topic: str, start_date: str, end_date: str, output_date: str, lo
     if logger is None:
         logger = setup_logger(topic, output_date)
     
-    logger.info(f"开始从数据库提取数据，时间范围: {start_date} 到 {end_date}")
-    
     # 获取所有渠道（从channels.yaml的keep配置）
     channels_config = settings.get_channel_config()
     channels = channels_config.get('keep', [])
-    logger.info(f"从配置获取渠道列表: {channels}")
+    log_success(logger, f"从配置获取渠道列表: {channels}", "Fetch")
     
     # 文件夹命名改为时间范围格式
     folder_name = f"{start_date}_{end_date}"
-    warehouse_dir = bucket("warehouse", topic, folder_name)
+    warehouse_dir = ensure_bucket("warehouse", topic, folder_name)
     all_data = []
     channel_files = {}  # 用于后续合并
     
-    # 连接到指定数据库（topic作为数据库名）
-    db_url = settings.get('defaults.db_url')
+    # 从databases.yaml读取数据库连接配置
+    db_config = settings.get('databases', {})
+    db_url = db_config.get('db_url')
     if not db_url:
-        logger.error("未找到数据库连接配置")
+        log_error(logger, "未找到数据库连接配置", "Fetch")
         return False
     
     # 创建指向特定数据库的连接
@@ -385,60 +376,63 @@ def fetch_range(topic: str, start_date: str, end_date: str, output_date: str, lo
             # 检查表是否存在
             with engine.connect() as conn:
                 if not _table_exists(conn, table_name):
-                    logger.warning(f"表 {topic}.{table_name} 不存在，跳过")
+                    log_error(logger, f"表 {topic}.{table_name} 不存在，跳过", "Fetch")
                     continue
             
             # 先检查表中的数据情况
             check_query = f"SELECT COUNT(*) as total_count FROM {table_name}"
             total_count = _execute_query(check_query, {})
-            logger.info(f"表 {table_name} 总记录数: {total_count.iloc[0]['total_count'] if len(total_count) > 0 else 0}")
-            
+
             # 检查时间字段范围
             time_range_query = f"""
-            SELECT 
+            SELECT
                 MIN(published_at) as min_time,
                 MAX(published_at) as max_time,
                 COUNT(*) as count
             FROM {table_name}
             """
             time_range = _execute_query(time_range_query, {})
+            time_range_str = ""
             if len(time_range) > 0:
-                logger.info(f"表 {table_name} 时间范围: {time_range.iloc[0]['min_time']} 到 {time_range.iloc[0]['max_time']}")
-            
+                min_time = time_range.iloc[0]['min_time']
+                max_time = time_range.iloc[0]['max_time']
+                if min_time and max_time:
+                    time_range_str = f" (时间范围: {min_time} 到 {max_time})"
+
             # 查询数据
             query = f"""
             SELECT * FROM {table_name}
             WHERE DATE(published_at) BETWEEN :start_date AND :end_date
             ORDER BY published_at DESC
             """
-            
+
             params = {
                 'start_date': start_date,
                 'end_date': end_date
             }
-            
+
             df = _execute_query(query, params)
-            
+
             if len(df) > 0:
                 # 保存单个渠道数据
                 channel_file = warehouse_dir / f"{channel}.csv"
                 write_csv(df, channel_file)
                 channel_files[channel] = channel_file
-                
+
                 # 添加到总数据
                 all_data.append(df)
-                
-                logger.info(f"渠道 {channel} 提取完成，记录数: {len(df)}")
+
+                log_success(logger, f"渠道 {channel} 提取完成，记录数: {len(df)}{time_range_str}", "Fetch")
             else:
-                logger.info(f"渠道 {channel} 在时间范围 {start_date} 到 {end_date} 内无数据")
+                log_skip(logger, f"渠道 {channel} 在时间范围 {start_date} 到 {end_date} 内无数据", "Fetch")
                 
         except Exception as e:
-            logger.error(f"提取渠道 {channel} 数据失败: {e}")
+            log_error(logger, f"提取渠道 {channel} 数据失败: {e}", "Fetch")
             continue
-    
+
     # 3. 按channels.yaml配置进行合并
     merge_config = channels_config.get('merge_for_analysis', {})
-    logger.info(f"开始按配置合并渠道: {merge_config}")
+    log_success(logger, f"开始按配置合并渠道: {merge_config}", "Fetch")
     
     # 记录需要删除的原始文件
     files_to_remove = set()
@@ -451,30 +445,29 @@ def fetch_range(topic: str, start_date: str, end_date: str, output_date: str, lo
                     df = pd.read_csv(channel_files[source_channel])
                     if len(df) > 0:
                         merge_data.append(df)
-                        logger.info(f"合并 {source_channel} -> {merge_name}，记录数: {len(df)}")
+                        log_success(logger, f"合并 {source_channel} -> {merge_name}，记录数: {len(df)}", "Fetch")
                         # 标记原始文件需要删除
                         files_to_remove.add(source_channel)
-            
+
             if merge_data:
                 merged_df = pd.concat(merge_data, ignore_index=True)
                 merged_file = warehouse_dir / f"{merge_name}.csv"
                 write_csv(merged_df, merged_file)
-                logger.info(f"合并完成: {merge_name}.csv，总记录数: {len(merged_df)}")
+                log_success(logger, f"合并完成: {merge_name}.csv，总记录数: {len(merged_df)}", "Fetch")
             else:
-                logger.warning(f"合并 {merge_name} 无数据源")
+                log_skip(logger, f"合并 {merge_name} 无数据源", "Warehouse")
                 
         except Exception as e:
-            logger.error(f"合并 {merge_name} 失败: {e}")
+            log_error(logger, f"合并 {merge_name} 失败: {e}", "Warehouse")
             continue
-    
+
     # 删除已合并的原始文件
     for channel in files_to_remove:
         if channel in channel_files and channel_files[channel].exists():
             try:
                 channel_files[channel].unlink()
-                logger.info(f"删除已合并的原始文件: {channel}.csv")
             except Exception as e:
-                logger.warning(f"删除文件 {channel}.csv 失败: {e}")
+                log_error(logger, f"删除文件 {channel}.csv 失败: {e}", "Warehouse")
     
     # 保存总体数据（不包含已合并的渠道）
     if all_data:
@@ -498,15 +491,14 @@ def fetch_range(topic: str, start_date: str, end_date: str, output_date: str, lo
             all_df = pd.concat(final_data, ignore_index=True)
             all_file = warehouse_dir / "总体.csv"
             write_csv(all_df, all_file)
-            logger.info(f"数据提取完成，总体记录数: {len(all_df)}")
             engine.dispose()
             return True
         else:
-            logger.warning("没有提取到任何数据")
+            log_error(logger, "没有提取到任何数据", "Warehouse")
             engine.dispose()
             return False
     else:
-        logger.warning("没有提取到任何数据")
+        log_error(logger, "没有提取到任何数据", "Warehouse")
         engine.dispose()
         return False
 
@@ -531,9 +523,9 @@ def fetch_by_config(topic: str, output_date: str, logger=None) -> bool:
     end_date = time_window.get('end')
     
     if not start_date or not end_date:
-        logger.error("未在defaults.yaml中找到有效的time_window配置")
+        log_error(logger, "未在defaults.yaml中找到有效的time_window配置", "Warehouse")
         return False
-    
-    logger.info(f"从配置读取时间范围: {start_date} 到 {end_date}")
+
+    log_success(logger, f"从配置读取时间范围: {start_date} 到 {end_date}", "Warehouse")
     
     return fetch_range(topic, start_date, end_date, output_date, logger)

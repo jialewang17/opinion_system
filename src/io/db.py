@@ -18,14 +18,19 @@ class DatabaseManager:
         Args:
             db_url (Optional[str]): 数据库连接URL，如果为None则从配置读取
         """
-        # 优先使用显式传入，其次环境变量，最后 defaults.yaml
+        # 优先级：显式传入 > 环境变量 > databases.yaml > defaults.yaml
         env_url = settings.get('env.DB_URL')
         # 如果 env 中残留占位符（如 host/user），则忽略以免误连
         if isinstance(env_url, str) and env_url:
             lowered = env_url.lower()
             if '://user:pass@host' in lowered or '@host' in lowered or 'user:pass' in lowered:
                 env_url = None
-        self.db_url = db_url or env_url or settings.get('defaults.db_url')
+
+        # 从databases.yaml读取配置
+        db_config = settings.get('databases', {})
+        databases_url = db_config.get('db_url')
+
+        self.db_url = db_url or env_url or databases_url or settings.get('defaults.db_url')
         self.engine: Optional[Engine] = None
         
     def connect(self) -> Engine:

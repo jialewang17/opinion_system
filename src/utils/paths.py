@@ -5,32 +5,19 @@ import os
 from pathlib import Path
 from typing import Literal, Optional
 
-# 环境变量名称
-PROJECT_ROOT_ENV = 'OPINION_SYSTEM_ROOT'
-DATA_DIR_ENV = 'OPINION_SYSTEM_DATA'
-LOGS_DIR_ENV = 'OPINION_SYSTEM_LOGS'
-CONFIGS_DIR_ENV = 'OPINION_SYSTEM_CONFIGS'
-
 # 目录层级类型
 LAYERS = Literal['raw', 'staging', 'clean', 'filtered', 'warehouse', 'processed', 'reports', 'results']
 
 def get_project_root() -> Path:
     """
     获取项目根目录，支持多种检测方式：
-    1. 环境变量 OPINION_SYSTEM_ROOT
-    2. 自动检测（基于当前文件位置）
-    3. 当前工作目录
+    1. 自动检测（基于当前文件位置）
+    2. 当前工作目录
     
     Returns:
         Path: 项目根目录路径
     """
-    # 方式1: 环境变量指定
-    if PROJECT_ROOT_ENV in os.environ:
-        env_root = Path(os.environ[PROJECT_ROOT_ENV])
-        if env_root.exists() and env_root.is_dir():
-            return env_root.resolve()
-    
-    # 方式2: 自动检测（基于当前文件位置）
+    # 方式1: 自动检测（基于当前文件位置）
     current_file = Path(__file__).resolve()
     
     # 尝试多种可能的项目结构
@@ -44,12 +31,12 @@ def get_project_root() -> Path:
         if _is_project_root(root):
             return root
     
-    # 方式3: 当前工作目录
+    # 方式2: 当前工作目录
     cwd = Path.cwd().resolve()
     if _is_project_root(cwd):
         return cwd
     
-    # 方式4: 向上查找项目根目录
+    # 方式3: 向上查找项目根目录
     for parent in cwd.parents:
         if _is_project_root(parent):
             return parent
@@ -90,13 +77,7 @@ def get_data_root() -> Path:
     Returns:
         Path: 数据根目录路径
     """
-    # 优先使用环境变量
-    if DATA_DIR_ENV in os.environ:
-        env_data = Path(os.environ[DATA_DIR_ENV])
-        if env_data.exists() and env_data.is_dir():
-            return env_data.resolve()
-    
-    # 默认使用项目根目录下的data文件夹
+    # 使用项目根目录下的data文件夹
     project_root = get_project_root()
     return project_root / "data"
 
@@ -108,13 +89,7 @@ def get_logs_root() -> Path:
     Returns:
         Path: 日志根目录路径
     """
-    # 优先使用环境变量
-    if LOGS_DIR_ENV in os.environ:
-        env_logs = Path(os.environ[LOGS_DIR_ENV])
-        if env_logs.exists() and env_logs.is_dir():
-            return env_logs.resolve()
-    
-    # 默认使用项目根目录下的logs文件夹
+    # 使用项目根目录下的logs文件夹
     project_root = get_project_root()
     return project_root / "logs"
 
@@ -126,13 +101,7 @@ def get_configs_root() -> Path:
     Returns:
         Path: 配置根目录路径
     """
-    # 优先使用环境变量
-    if CONFIGS_DIR_ENV in os.environ:
-        env_configs = Path(os.environ[CONFIGS_DIR_ENV])
-        if env_configs.exists() and env_configs.is_dir():
-            return env_configs.resolve()
-    
-    # 默认使用项目根目录下的configs文件夹
+    # 使用项目根目录下的configs文件夹
     project_root = get_project_root()
     return project_root / "configs"
 
@@ -201,46 +170,3 @@ def get_relative_path(absolute_path: Path) -> str:
     except ValueError:
         return str(absolute_path)
 
-
-def ensure_project_structure() -> None:
-    """
-    确保项目目录结构存在
-    """
-    project_root = get_project_root()
-    data_root = get_data_root()
-    logs_root = get_logs_root()
-    configs_root = get_configs_root()
-    
-    # 创建必要的目录
-    for directory in [data_root, logs_root, configs_root]:
-        directory.mkdir(parents=True, exist_ok=True)
-    
-    print(f"✅ 项目目录结构已确保: {project_root}")
-
-
-def print_project_info() -> None:
-    """
-    打印项目路径信息
-    """
-    project_root = get_project_root()
-    data_root = get_data_root()
-    logs_root = get_logs_root()
-    configs_root = get_configs_root()
-    
-    print("📁 项目路径信息:")
-    print(f"   项目根目录: {project_root}")
-    print(f"   数据目录: {data_root}")
-    print(f"   日志目录: {logs_root}")
-    print(f"   配置目录: {configs_root}")
-    
-    print("\n🔧 环境变量配置:")
-    env_vars = {
-        PROJECT_ROOT_ENV: "项目根目录",
-        DATA_DIR_ENV: "数据目录",
-        LOGS_DIR_ENV: "日志目录",
-        CONFIGS_DIR_ENV: "配置目录"
-    }
-    
-    for var, desc in env_vars.items():
-        status = "✅ 已设置" if var in os.environ else "❌ 未设置"
-        print(f"   {var}: {status}")
