@@ -54,17 +54,29 @@ class QwenClient:
         }
 
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.post(API_URL, json=data, headers=headers, timeout=30) as resp:
+            # 增加超时时间和连接池配置
+            timeout = aiohttp.ClientTimeout(total=60, connect=10, sock_read=30)
+            connector = aiohttp.TCPConnector(limit=10, limit_per_host=5)
+            
+            async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
+                async with session.post(API_URL, json=data, headers=headers) as resp:
                     if resp.status == 200:
                         response_data = await resp.json()
                         return {
                             'text': response_data.get('output', {}).get('text', ''),
                             'usage': response_data.get('usage', {})
                         }
+                    elif resp.status == 429:  # 限流错误
+                        return None
+                    elif resp.status >= 500:  # 服务器错误
+                        return None
                     else:
                         return None
-        except Exception as e:
+        except asyncio.TimeoutError:
+            return None
+        except aiohttp.ClientError:
+            return None
+        except Exception:
             return None
 
 # 全局千问客户端实例（延迟初始化）

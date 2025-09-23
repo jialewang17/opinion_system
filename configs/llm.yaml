@@ -2,18 +2,6 @@
 filter_llm:
   provider: "qwen"
   model: "qwen-plus"
-  qps: 200
-  truncation:200
-
-# 用于AI重点议题分析的大模型配置
-highlights_llm:
-  provider: "qwen"
-  model: "qwen-plus"
-  qps: 200
-  truncation: 40000
-
-# 用于AI解读的大模型配置
-summary_llm:
-  provider: "qwen"
-  model: "qwen-plus"
-  qps: 200
+  qps: 50
+  batch_size: 32
+  truncation: 200

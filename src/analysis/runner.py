@@ -14,9 +14,8 @@ from .functions.attitude import analyze_attitude_overall, analyze_attitude_by_ch
 from .functions.trends import analyze_trends_overall, analyze_trends_by_channel
 from .functions.geography import analyze_geography_overall, analyze_geography_by_channel
 from .functions.publishers import analyze_publishers_overall, analyze_publishers_by_channel
-from .functions.theme import analyze_theme_overall
-from .functions.highlights import analyze_highlights_overall, analyze_highlights_by_channel
 from .functions.keywords import analyze_keywords_overall, analyze_keywords_by_channel
+from .functions.classification import analyze_classification_overall, analyze_classification_by_channel
 
 def run_Analyze(topic: str, date: str, logger=None, only_function: str = None) -> bool:
     """
@@ -102,21 +101,17 @@ def run_Analyze(topic: str, date: str, logger=None, only_function: str = None) -
                     result = analyze_geography_overall(df_overall, logger)
                 elif func_name == 'publishers':
                     result = analyze_publishers_overall(df_overall, logger)
-                elif func_name == 'highlights':
-                    result = analyze_highlights_overall(df_overall, topic, logger)
-                elif func_name == 'theme':
-                    result = analyze_theme_overall(df_overall, logger)
+                elif func_name == 'classification':
+                    result = analyze_classification_overall(df_overall, logger)
 
                 # 保存总体
                 func_dir = processed_root / func_name / '总体'
                 func_dir.mkdir(parents=True, exist_ok=True)
-                # attitude函数保存为attitude.json，geography函数保存为geography.json，highlights函数保存为highlights.json，keywords函数保存为keywords.json，publishers函数保存为publishers.json，trends函数保存为trends.json，volume函数保存为volume.json，其他函数保存为result.json
+                # attitude函数保存为attitude.json，geography函数保存为geography.json，keywords函数保存为keywords.json，publishers函数保存为publishers.json，trends函数保存为trends.json，volume函数保存为volume.json，classification函数保存为classification.json，其他函数保存为result.json
                 if func_name == 'attitude':
                     filename = 'attitude.json'
                 elif func_name == 'geography':
                     filename = 'geography.json'
-                elif func_name == 'highlights':
-                    filename = 'highlights.json'
                 elif func_name == 'keywords':
                     filename = 'keywords.json'
                 elif func_name == 'publishers':
@@ -125,6 +120,8 @@ def run_Analyze(topic: str, date: str, logger=None, only_function: str = None) -
                     filename = 'trends.json'
                 elif func_name == 'volume':
                     filename = 'volume.json'
+                elif func_name == 'classification':
+                    filename = 'classification.json'
                 else:
                     filename = 'result.json'
                 output_file = func_dir / filename
@@ -156,20 +153,16 @@ def run_Analyze(topic: str, date: str, logger=None, only_function: str = None) -
                         result = analyze_attitude_by_channel(df_channel, channel_name, logger)
                     elif func_name == 'geography':
                         result = analyze_geography_by_channel(df_channel, channel_name, logger)
-                    elif func_name == 'highlights':
-                        result = analyze_highlights_by_channel(df_channel, topic, channel_name, logger)
-                    elif func_name == 'theme':
-                        result = analyze_theme_overall(df_channel, logger)
+                    elif func_name == 'classification':
+                        result = analyze_classification_by_channel(df_channel, channel_name, logger)
 
                     func_dir = processed_root / func_name / channel_name
                     func_dir.mkdir(parents=True, exist_ok=True)
-                    # attitude函数保存为attitude.json，geography函数保存为geography.json，highlights函数保存为highlights.json，keywords函数保存为keywords.json，publishers函数保存为publishers.json，trends函数保存为trends.json，volume函数保存为volume.json，其他函数保存为result.json
+                    # attitude函数保存为attitude.json，geography函数保存为geography.json，keywords函数保存为keywords.json，publishers函数保存为publishers.json，trends函数保存为trends.json，volume函数保存为volume.json，classification函数保存为classification.json，其他函数保存为result.json
                     if func_name == 'attitude':
                         filename = 'attitude.json'
                     elif func_name == 'geography':
                         filename = 'geography.json'
-                    elif func_name == 'highlights':
-                        filename = 'highlights.json'
                     elif func_name == 'keywords':
                         filename = 'keywords.json'
                     elif func_name == 'publishers':
@@ -178,6 +171,8 @@ def run_Analyze(topic: str, date: str, logger=None, only_function: str = None) -
                         filename = 'trends.json'
                     elif func_name == 'volume':
                         filename = 'volume.json'
+                    elif func_name == 'classification':
+                        filename = 'classification.json'
                     else:
                         filename = 'result.json'
                     output_file = func_dir / filename

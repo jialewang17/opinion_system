@@ -2,9 +2,13 @@
 统一日志管理模块
 """
 import logging
+import warnings
 from pathlib import Path
 from typing import Optional
 from .paths import get_logs_root
+
+# 抑制 openpyxl 的默认样式警告
+warnings.filterwarnings("ignore", message="workbook contains no default style, apply openpyxl's default")
 
 
 class ColoredFormatter(logging.Formatter):

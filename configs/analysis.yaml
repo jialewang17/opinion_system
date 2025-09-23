@@ -15,7 +15,7 @@ functions:
     target: 总体
   - name: highlights
     target: 总体
-  - name: theme
+  - name: classification
     target: 总体
 
   # 渠道分析函数
@@ -31,5 +31,5 @@ functions:
     target: 渠道
   - name: highlights
     target: 渠道
-  - name: theme
+  - name: classification
     target: 渠道

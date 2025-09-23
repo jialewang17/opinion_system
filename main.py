@@ -5,7 +5,11 @@
   python cli.py clean --topic 控烟 --date 2025-08-24
 """
 import sys
+import warnings
 from pathlib import Path
+
+# 抑制 openpyxl 的默认样式警告
+warnings.filterwarnings("ignore", message="workbook contains no default style, apply openpyxl's default")
 
 
 def _ensure_src_on_path() -> None:

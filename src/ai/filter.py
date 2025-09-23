@@ -76,7 +76,7 @@ def _parse_response(raw: str) -> Dict[str, Any]:
             return json.loads(s[i:j+1])
     except Exception:
         pass
-    return {"相关": False, "理由": "解析失败"}
+    return {"相关": False, "分类": "未知", "理由": "解析失败"}
 
 
 def _is_high(parsed: Dict[str, Any]) -> bool:
@@ -102,6 +102,33 @@ def _is_high(parsed: Dict[str, Any]) -> bool:
     return False
 
 
+def _get_classification(parsed: Dict[str, Any]) -> str:
+    """
+    提取分类信息
+    
+    Args:
+        parsed (Dict[str, Any]): 解析后的响应数据
+    
+    Returns:
+        str: 分类结果
+    """
+    if not isinstance(parsed, dict):
+        return "未知"
+    
+    # 优先从"分类"字段获取
+    classification = parsed.get('分类', '')
+    if isinstance(classification, str) and classification.strip():
+        return classification.strip()
+    
+    # 尝试其他可能的字段名
+    for key in ['类别', 'category', 'type', 'class']:
+        value = parsed.get(key, '')
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    
+    return "未知"
+
+
 async def run_Filter(topic: str, date: str, logger=None) -> bool:
     """
     运行相关性筛选
@@ -118,12 +145,13 @@ async def run_Filter(topic: str, date: str, logger=None) -> bool:
         logger = setup_logger(topic, date)
 
     # 读取配置
-    llm_cfg = settings.get('filter_llm', {})
+    llm_cfg = settings.get('llm', {}).get('filter_llm', {})
     model = llm_cfg.get('model', 'qwen-plus')
     qps = int(llm_cfg.get('qps', 200))
     max_tokens = int(llm_cfg.get('truncation', 200))
+    batch_size = int(llm_cfg.get('batch_size', 32))
 
-    log_success(logger, f"使用模型: {model}, QPS: {qps}, 截断长度: {max_tokens}", "Filter")
+    log_success(logger, f"使用模型: {model}, QPS: {qps}, 截断长度: {max_tokens}, 批次大小: {batch_size}", "Filter")
 
     # 读取提示词模板
     prompt_config_path = Path(f"configs/prompt/filter/{topic}.yaml")
@@ -158,57 +186,82 @@ async def run_Filter(topic: str, date: str, logger=None) -> bool:
     # QPS控制
     last_request_time = time.time()
 
-    async def call_with_qps(prompt: str, idx: int, channel: str) -> Tuple[int, Optional[str], int]:
+    async def call_with_qps(prompt: str, idx: int, channel: str, max_retries: int = 3) -> Tuple[int, Optional[str], int]:
         """
-        带QPS控制的API调用
+        带QPS控制和重试机制的API调用
 
         Args:
             prompt (str): 提示词
             idx (int): 任务索引
             channel (str): 渠道名称
+            max_retries (int): 最大重试次数
 
         Returns:
             Tuple[int, Optional[str], int]: (索引, 响应内容, token消耗)
         """
         nonlocal last_request_time
 
-        # QPS控制
-        current_time = time.time()
-        time_diff = current_time - last_request_time
-        if time_diff < 1.0 / qps:
-            await asyncio.sleep(1.0 / qps - time_diff)
-        last_request_time = time.time()
+        for attempt in range(max_retries + 1):
+            try:
+                # QPS控制 - 更保守的延迟
+                current_time = time.time()
+                time_diff = current_time - last_request_time
+                min_interval = 1.0 / qps
+                
+                # 添加额外的安全间隔，避免API过载
+                if time_diff < min_interval * 1.2:  # 增加20%的安全间隔
+                    await asyncio.sleep(min_interval * 1.2 - time_diff)
+                
+                last_request_time = time.time()
 
-        try:
-            # 使用简化的qwen客户端
-            result = await client.call(prompt, model, max_tokens)
+                # 使用简化的qwen客户端
+                result = await client.call(prompt, model, max_tokens)
 
-            if result and result.get('text'):
-                text_response = result['text']
-                usage_info = result.get('usage', {})
+                if result and result.get('text'):
+                    text_response = result['text']
+                    usage_info = result.get('usage', {})
 
-                # 解析响应并判断相关性
-                parsed = _parse_response(text_response)
-                is_relevant = _is_high(parsed)
+                    # 解析响应并判断相关性
+                    parsed = _parse_response(text_response)
+                    is_relevant = _is_high(parsed)
+                    classification = _get_classification(parsed)
 
-                # 获取实际token消耗
-                total_tokens = usage_info.get('total_tokens', 0)
-                if total_tokens == 0:
-                    # 如果API没有返回token信息，则估算
-                    total_tokens = len(prompt) // 4 + len(text_response) // 4
+                    # 获取实际token消耗
+                    total_tokens = usage_info.get('total_tokens', 0)
+                    if total_tokens == 0:
+                        # 如果API没有返回token信息，则估算
+                        total_tokens = len(prompt) // 4 + len(text_response) // 4
 
-                # 显示判断结果而不是原始响应
-                result_text = "相关" if is_relevant else "不相关"
-                log_success(logger, f"[{channel}] 任务{idx} 成功 | 结果: {result_text} | Token: {total_tokens}", "Filter")
+                    # 显示判断结果而不是原始响应
+                    result_text = "相关" if is_relevant else "不相关"
+                    if attempt > 0:
+                        log_success(logger, f"[{channel}] 任务{idx} 成功 (重试{attempt}次) | 结果: {result_text} | 分类: {classification} | Token: {total_tokens}", "Filter")
+                    else:
+                        log_success(logger, f"[{channel}] 任务{idx} 成功 | 结果: {result_text} | 分类: {classification} | Token: {total_tokens}", "Filter")
 
-                return idx, text_response, total_tokens
-            else:
-                log_error(logger, f"[{channel}] 任务{idx} 失败 | 无响应", "Filter")
-                return idx, None, 0
+                    return idx, text_response, total_tokens
+                else:
+                    if attempt < max_retries:
+                        # 重试前等待更长时间
+                        wait_time = (attempt + 1) * 2  # 递增等待时间
+                        log_error(logger, f"[{channel}] 任务{idx} 失败，{wait_time}秒后重试 (第{attempt + 1}次)", "Filter")
+                        await asyncio.sleep(wait_time)
+                        continue
+                    else:
+                        log_error(logger, f"[{channel}] 任务{idx} 失败 | 无响应 (已重试{max_retries}次)", "Filter")
+                        return idx, None, 0
 
-        except Exception as e:
-            log_error(logger, f"[{channel}] 任务{idx} 异常 | {str(e)}", "Filter")
-            return idx, None, 0
+            except Exception as e:
+                if attempt < max_retries:
+                    wait_time = (attempt + 1) * 2
+                    log_error(logger, f"[{channel}] 任务{idx} 异常，{wait_time}秒后重试 (第{attempt + 1}次) | {str(e)}", "Filter")
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    log_error(logger, f"[{channel}] 任务{idx} 异常 | {str(e)} (已重试{max_retries}次)", "Filter")
+                    return idx, None, 0
+
+        return idx, None, 0
 
     # 处理每个渠道
     for fp in files:
@@ -237,14 +290,22 @@ async def run_Filter(topic: str, date: str, logger=None) -> bool:
 
             prompts = [template.replace('{text}', t) for t in texts]
 
-            # 并发处理
-            async with aiohttp.ClientSession() as session:
-                tasks = [
-                    asyncio.create_task(call_with_qps(prompt, i, channel))
-                    for i, prompt in enumerate(prompts)
+            # 批次并发处理，避免同时发送太多请求
+            # 使用配置文件中的batch_size，但确保在合理范围内
+            actual_batch_size = batch_size
+            results = []
+            
+            for i in range(0, len(prompts), actual_batch_size):
+                batch_prompts = prompts[i:i + actual_batch_size]
+                batch_tasks = [
+                    asyncio.create_task(call_with_qps(prompt, i + j, channel))
+                    for j, prompt in enumerate(batch_prompts)
                 ]
-
-                results = await asyncio.gather(*tasks)
+                
+                # 等待当前批次完成
+                batch_results = await asyncio.gather(*batch_tasks)
+                results.extend(batch_results)
+            
 
             # 处理结果
             responses = []
@@ -262,17 +323,19 @@ async def run_Filter(topic: str, date: str, logger=None) -> bool:
             # 解析并筛选
             parsed = [_parse_response(r or '') for r in responses]
             mask = [_is_high(p) for p in parsed]
+            classifications = [_get_classification(p) for p in parsed]
             out = df.iloc[:len(mask)].copy()
             out['rel_raw'] = parsed
             out['rel_score'] = mask
+            out['classification'] = classifications
             out = out[out['rel_score'] == True]
 
             log_success(logger, f"{channel} 完成 | 原始:{len(df)}, 相关:{len(out)}, Token消耗:{channel_tokens}", "Filter")
 
             # 保存结果
             dst = ensure_bucket('Filtered', topic, date)
-            original_cols = [c for c in df.columns if c not in ['rel_raw', 'rel_score']]
-            to_save = out[original_cols] if all(c in out.columns for c in original_cols) else out.drop(columns=['rel_raw','rel_score'], errors='ignore')
+            original_cols = [c for c in df.columns if c not in ['rel_raw', 'rel_score', 'classification']]
+            to_save = out[original_cols + ['classification']] if all(c in out.columns for c in original_cols) else out.drop(columns=['rel_raw','rel_score'], errors='ignore')
             write_excel(to_save, dst / f"{channel}.xlsx")
 
         except Exception as e:
