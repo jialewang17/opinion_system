@@ -26,14 +26,12 @@ DASHSCOPE_API_KEY=sk-7b22413bfe8845b3bc59613d43903793
 ### 3. 操作命令
 
 #在进行AI筛选前，可在configs/prompt/filter文件夹中，新建[话题].yaml，写入对应话题需要信息/以及分类的提示词，写好后运行下方命令
-#在进行重点议题提取前，可在configs/prompt/highlights文件夹中，新建[话题].yaml，写入重点议题的提示词，写好后运行下方命令
 
 # 数据存储流水线
 python main.py DataPipeline --topic 测试 --date 2025-01-01 
 
 # 数据分析流水线
-python main.py AnalyzePipeline --topic 测试 --start 2025-08-24 --end 2025-08-27
-
+python main.py AnalyzePipeline --topic 测试 --start 2025-09-23 --end 2025-09-23
 
 
 
@@ -55,10 +53,9 @@ python main.py Upload --topic 测试 --date 2025-01-01
 python main.py Query
 
 # 提数
-python main.py Fetch --topic 测试 --start 2025-08-24 --end 2025-08-27
+python main.py Fetch --topic 测试 --start 2025-09-23 --end 2025-09-23
  
 # 数据分析
 
-#在进行重点议题提取前，可在configs/prompt/highlights文件夹中，新建[话题].yaml，写入重点议题的提示词，写好后运行下方命令
-单功能：python main.py Analyze --topic 测试 --start 2025-08-24 --end 2025-08-27 --func attitude
-联合功能：python main.py Analyze --topic 测试 --start 2025-08-24
+单功能：python main.py Analyze --topic 测试 --start 2025-09-23 --end 2025-09-23 --func attitude
+联合功能：python main.py Analyze --topic 测试 --start 2025-09-23 --end 2025-09-23

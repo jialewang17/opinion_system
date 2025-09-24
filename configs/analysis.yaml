@@ -13,8 +13,6 @@ functions:
     target: 总体
   - name: publishers
     target: 总体
-  - name: highlights
-    target: 总体
   - name: classification
     target: 总体
 
@@ -28,8 +26,6 @@ functions:
   - name: geography
     target: 渠道
   - name: publishers
-    target: 渠道
-  - name: highlights
     target: 渠道
   - name: classification
     target: 渠道
