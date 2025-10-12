@@ -5,3 +5,24 @@ filter_llm:
   qps: 50
   batch_size: 32
   truncation: 200
+
+# 用于router_vec的大模型配置
+router_vec_llm:
+  provider: "qwen"
+  model: "qwen-plus"
+  qps: 50
+  batch_size: 32
+
+# 用于router_retrieve的大模型配置
+router_retrieve_llm:
+  provider: "qwen"
+  model: "qwen-plus"
+  qps: 50
+  batch_size: 32
+
+# 用于向量化的配置（ragrouter与tagrag共用）
+embedding_llm:
+  provider: "qwen"
+  model: "text-embedding-v4"
+  dimension: 1024
+

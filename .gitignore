@@ -1,6 +1,6 @@
 # OpinionSystem .gitignore
 
-# 数据文件
+# 图片文件（忽略）
 *.png
 *.jpg
 *.jpeg
@@ -9,17 +9,30 @@
 *.svg
 *.ico
 
-# 文档文件
+# 文档文件（忽略）
 *.html
 *.htm
-*.xlsx
-*.xls
-*.csv
 *.pdf
 *.doc
 *.docx
 *.ppt
 *.pptx
+
+# 数据文件（保留）
+# Excel 和 CSV 文件保留，用于数据处理
+# *.xlsx
+# *.xls
+# *.csv
+
+# JSON 文件（保留）
+# JSON 文件保留，用于配置和数据映射
+# *.json
+
+# LanceDB 文件（保留）
+# LanceDB 向量数据库文件保留
+# *.lance
+# *.manifest
+# *.txn
 
 # Python
 __pycache__/
@@ -44,19 +57,24 @@ wheels/
 *.egg
 MANIFEST
 
-# 虚拟环境
+# 虚拟环境（忽略）
 venv/
 env/
 ENV/
 env.bak/
 venv.bak/
 
-# IDE
+# IDE（忽略）
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# Cursor IDE（忽略）
+.cursor/
+.cursorrules
+*.cursor
 
 # 操作系统
 .DS_Store
@@ -67,27 +85,30 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# 日志文件
-*.log
-logs/
+# 日志文件（根据需求可选）
+# 如果要保留日志文件，注释掉下面两行
+# *.log
+# logs/
 
-# 环境变量
+# 环境变量（忽略）
 .env
 .env.local
 .env.*.local
+.env.production
+.env.development
 
-# 临时文件
+# 临时文件（忽略）
 *.tmp
 *.temp
 *.bak
 *.backup
 
-# 数据目录（可选，根据需求调整）
-# data/
-# data/*/warehouse/
-# data/*/processed/
-# data/*/reports/
-# data/*/results/
+# 数据目录结构（保留文件夹结构但可以选择性忽略内容）
+# 如果要忽略某些数据子目录，取消下面的注释
+# data/raw/
+# data/merge/
+# data/clean/
+# data/filter/
 
 # 但保留数据目录结构
 !data/
@@ -96,9 +117,18 @@ logs/
 
 # 配置文件（保留）
 !configs/
-!configs/*.yaml
-!configs/*.yml
-!configs/*.txt
+!configs/**/*.yaml
+!configs/**/*.yml
+!configs/**/*.txt
+
+# RAG数据库（保留）
+# 保留 LanceDB 向量数据库和相关文件
+!src/utils/rag/
+!src/utils/rag/**/*.lance
+!src/utils/rag/**/*.manifest
+!src/utils/rag/**/*.txn
+!src/utils/rag/**/*.json
+!src/utils/rag/**/*.txt
 
 # 模板文件（保留）
 !templates/
@@ -111,5 +141,10 @@ logs/
 # 项目文件（保留）
 !requirements.txt
 !README.md
+!main.py
 !cli.py
 !test_*.py
+!.gitignore
+
+# Git 自身
+.git/

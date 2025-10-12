@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "name": "戒烟",
+      "value": 14
+    },
+    {
+      "name": "戒色",
+      "value": 10
+    },
+    {
+      "name": "断念",
+      "value": 10
+    },
+    {
+      "name": "功夫",
+      "value": 7
+    },
+    {
+      "name": "念头",
+      "value": 4
+    },
+    {
+      "name": "实战",
+      "value": 4
+    },
+    {
+      "name": "清嗓子",
+      "value": 4
+    },
+    {
+      "name": "回复",
+      "value": 3
+    },
+    {
+      "name": "学会",
+      "value": 3
+    },
+    {
+      "name": "高手",
+      "value": 3
+    },
+    {
+      "name": "习惯",
+      "value": 3
+    },
+    {
+      "name": "信心",
+      "value": 2
+    },
+    {
+      "name": "没买",
+      "value": 2
+    },
+    {
+      "name": "幸福",
+      "value": 2
+    },
+    {
+      "name": "哥哥",
+      "value": 2
+    },
+    {
+      "name": "效应",
+      "value": 2
+    },
+    {
+      "name": "看过",
+      "value": 2
+    },
+    {
+      "name": "不行",
+      "value": 2
+    },
+    {
+      "name": "懂得",
+      "value": 2
+    },
+    {
+      "name": "道理",
+      "value": 2
+    }
+  ]
+}

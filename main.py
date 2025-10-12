@@ -2,6 +2,7 @@
 OpinionSystem 舆情分析系统主程序
 """
 import sys
+import json
 import click
 import asyncio
 import warnings
@@ -189,8 +190,116 @@ def analysis_pipeline(topic, start, end):
     
     return True
 
+@cli.command('TagVectorize')
+@click.option('--topic', default='控烟', help='RAG主题名称（如"控烟"）')
+def tagrag(topic):
+    """
+    运行TagRAG向量化功能
+    """
+    from src.utils.rag.tagrag.tag_vec_data import vectorize_and_store
+    
+    try:
+        dataset = vectorize_and_store(topic_name=topic)
+        return True
+    except Exception as e:
+        return False
+
+# 后续将融入系统中，后续可删除
+@cli.command('TagRetrieve')
+@click.option('--query', required=True, help='查询语句')
+@click.option('--topic', default='控烟', help='RAG主题名称（如"控烟"）')
+@click.option('--search-column', default='tag_vec', help='搜索列 (tag_vec 或 text_vec)')
+@click.option('--top-k', default=1, help='返回个数')
+@click.option('--return-columns', help='返回列，用逗号分隔 (如: id,text)')
+def tag_retrieve_command(query, topic, search_column, top_k, return_columns):
+    """
+    运行TagRAG检索功能
+    """
+    from src.utils.rag.tagrag.tag_retrieve_data import tag_retrieve
+    
+    try:
+        # 处理返回列参数
+        return_cols = None
+        if return_columns:
+            return_cols = [col.strip() for col in return_columns.split(',')]
+        
+        # 执行检索
+        result = tag_retrieve(
+            query=query,
+            topic_name=topic,
+            search_column=search_column,
+            top_k=int(top_k),
+            return_columns=return_cols
+        )
+        
+        # 输出结果
+        if result['status'] == 'success':
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        else:
+            print(f"TagRetrieve: {result['error']}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"TagRetrieve检索处理失败: {e}")
+        return False
+
+@cli.command('RouterVectorize')
+@click.option('--topic', default='默认', help='RAG主题名称（如"默认"）')
+def ragrouter_command(topic):
+    """
+    运行RagRouter向量化处理功能
+    """
+    from src.utils.rag.ragrouter.router_vec_data import run_ragrouter
+    
+    try:
+        result = run_ragrouter(topic_name=topic)
+        return True
+    except Exception as e:
+        print(f"RouterVectorize处理失败: {e}")
+        return False
+
+# 后续将融入系统中，后续可删除 
+@cli.command('RouterRetrieve')
+@click.option('--topic', required=True, help='检索主题（如：控烟）')
+@click.option('--query', required=True, help='查询语句')
+@click.option('--mode', default='mixed', type=click.Choice(['mixed', 'graphrag', 'normalrag', 'tagrag']),
+              help='检索模式 (默认: mixed)')
+@click.option('--topk-graphrag', default=3, type=int, help='GraphRAG返回的核心实体数量 (默认: 3)')
+@click.option('--topk-normalrag', default=10, type=int, help='NormalRAG返回的句子数量 (默认: 5)')
+@click.option('--topk-tagrag', default=3, type=int, help='TagRAG返回的文本块数量 (默认: 5)')
+@click.option('--no-llm-summary', is_flag=True, help='禁用LLM整理结果')
+@click.option('--llm-summary-mode', default='supplement', type=click.Choice(['strict', 'supplement']),
+              help='LLM整理模式 (默认: strict)')
+@click.option('--return-format', default='both', type=click.Choice(['both', 'llm_only', 'index_only']),
+              help='返回格式: both(全部), llm_only(仅LLM), index_only(仅索引) (默认: both)')
+def router_retrieve_command(topic, query, mode, topk_graphrag, topk_normalrag, topk_tagrag,
+                           no_llm_summary, llm_summary_mode, return_format):
+    """
+    运行RagRouter检索功能
+    """
+    from src.utils.rag.ragrouter.router_retrieve_data import router_retrieve
+    
+    try:
+        # 执行检索
+        results = router_retrieve(
+            topic=topic,
+            query=query,
+            mode=mode,
+            topk_graphrag=topk_graphrag,
+            topk_normalrag=topk_normalrag,
+            topk_tagrag=topk_tagrag,
+            enable_llm_summary=not no_llm_summary,
+            llm_summary_mode=llm_summary_mode,
+            return_format=return_format
+        )
+    
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return True
+        
+    except Exception as e:
+        print(f"RouterRetrieve检索失败: {e}")
+        return False
 
 if __name__ == "__main__":
     main()
-
-

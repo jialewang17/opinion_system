@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "name": "neutral",
+      "value": 7
+    },
+    {
+      "name": "positive",
+      "value": 2
+    },
+    {
+      "name": "negative",
+      "value": 2
+    }
+  ]
+}
