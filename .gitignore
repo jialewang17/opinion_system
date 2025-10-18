@@ -17,6 +17,7 @@
 *.docx
 *.ppt
 *.pptx
+*.log
 
 # 数据文件（保留）
 # Excel 和 CSV 文件保留，用于数据处理

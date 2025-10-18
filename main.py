@@ -271,7 +271,7 @@ def ragrouter_command(topic):
 @click.option('--no-llm-summary', is_flag=True, help='禁用LLM整理结果')
 @click.option('--llm-summary-mode', default='supplement', type=click.Choice(['strict', 'supplement']),
               help='LLM整理模式 (默认: strict)')
-@click.option('--return-format', default='both', type=click.Choice(['both', 'llm_only', 'index_only']),
+@click.option('--return-format', default='llm_only', type=click.Choice(['both', 'llm_only', 'index_only']),
               help='返回格式: both(全部), llm_only(仅LLM), index_only(仅索引) (默认: both)')
 def router_retrieve_command(topic, query, mode, topk_graphrag, topk_normalrag, topk_tagrag,
                            no_llm_summary, llm_summary_mode, return_format):

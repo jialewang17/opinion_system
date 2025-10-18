@@ -1163,3 +1163,25 @@
 2025-10-12 18:15:43,413 - success - INFO - [NormalRAG]召回: 句子数-10
 2025-10-12 18:15:43,424 - success - INFO - [TagRAG]召回: 文本块数-3
 2025-10-12 18:16:39,074 - success - INFO - 资料整理完成：共 (3407字)
+2025-10-12 23:08:19,845 - RagRouter_控烟_2025-10-12 - INFO - [RouterRetrieve] 正在进行Router检索 - 主题: 控烟
+2025-10-12 23:08:19,907 - success - INFO - 载入表: normalrag (1018条)
+2025-10-12 23:08:19,909 - success - INFO - 载入表: graphrag_entities (2301条)
+2025-10-12 23:08:19,911 - success - INFO - 载入表: graphrag_relationships (2038条)
+2025-10-12 23:08:19,913 - success - INFO - 载入表: graphrag_texts (141条)
+2025-10-12 23:08:20,988 - success - INFO - 查询包含时间范围: 2024年
+2025-10-12 23:08:22,282 - success - INFO - 文档匹配完成: 1, 2, 3, 4, 5, 6
+2025-10-12 23:08:30,531 - success - INFO - [GraphRAG]召回: 实体数-11 | 关系数-8
+2025-10-12 23:08:31,344 - success - INFO - [NormalRAG]召回: 句子数-10
+2025-10-12 23:08:31,458 - success - INFO - [TagRAG]召回: 文本块数-3
+2025-10-12 23:09:20,427 - success - INFO - 资料整理完成：共 (2879字)
+2025-10-12 23:10:13,248 - RagRouter_控烟_2025-10-12 - INFO - [RouterRetrieve] 正在进行Router检索 - 主题: 控烟
+2025-10-12 23:10:13,263 - success - INFO - 载入表: normalrag (1018条)
+2025-10-12 23:10:13,264 - success - INFO - 载入表: graphrag_entities (2301条)
+2025-10-12 23:10:13,267 - success - INFO - 载入表: graphrag_relationships (2038条)
+2025-10-12 23:10:13,271 - success - INFO - 载入表: graphrag_texts (141条)
+2025-10-12 23:10:13,995 - success - INFO - 查询包含时间范围: 2024年
+2025-10-12 23:10:14,839 - success - INFO - 文档匹配完成: 1, 2, 3, 4, 5, 6
+2025-10-12 23:10:23,156 - success - INFO - [GraphRAG]召回: 实体数-11 | 关系数-8
+2025-10-12 23:10:23,977 - success - INFO - [NormalRAG]召回: 句子数-10
+2025-10-12 23:10:24,089 - success - INFO - [TagRAG]召回: 文本块数-3
+2025-10-12 23:11:13,285 - success - INFO - 资料整理完成：共 (3419字)
