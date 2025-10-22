@@ -11,7 +11,6 @@ from pathlib import Path
 # 抑制 openpyxl 的默认样式警告
 warnings.filterwarnings("ignore", message="workbook contains no default style, apply openpyxl's default")
 
-
 def _ensure_src_on_path() -> None:
     """确保src目录在Python路径中"""
     project_root = Path(__file__).resolve().parent
@@ -19,12 +18,10 @@ def _ensure_src_on_path() -> None:
     if str(src_dir) not in sys.path:
         sys.path.insert(0, str(src_dir))
 
-
 def main() -> None:
     """主程序入口"""
     _ensure_src_on_path()
     cli()
-
 
 @click.group()
 def cli():
@@ -46,7 +43,6 @@ def trs_merge(topic, date):
     if not result:
         print(f"合并失败: {topic} - {date}")
 
-
 @cli.command('Clean')
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--date', required=True, help='日期 (YYYY-MM-DD)')
@@ -59,7 +55,6 @@ def clean(topic, date):
     result = run_clean(topic, date)
     if not result:
         print(f"清洗失败: {topic} - {date}")
-
 
 @cli.command('Filter')
 @click.option('--topic', required=True, help='专题名称')
@@ -74,7 +69,6 @@ def ai_filter(topic, date):
     if not result:
         print(f"筛选失败: {topic} - {date}")
 
-
 @cli.command('Upload')
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--date', required=True, help='日期 (YYYY-MM-DD)')
@@ -88,7 +82,6 @@ def upload(topic, date):
     if not result:
         print(f"上传失败: {topic} - {date}")
 
-
 @cli.command('Query')
 def query():
     """
@@ -99,7 +92,6 @@ def query():
     result = run_query()
     if not result:
         print("查询失败")
-
 
 @cli.command('Fetch')
 @click.option('--topic', required=True, help='专题名称')
@@ -115,7 +107,6 @@ def fetch(topic, start, end):
     if not result:
         print(f"提取失败: {topic} - {start} 到 {end}")
 
-
 @cli.command('Analyze')
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--start', required=True, help='开始日期 (YYYY-MM-DD)')
@@ -130,7 +121,6 @@ def analyze(topic, start, end, func):
     result = run_Analyze(topic, start, end_date=end, only_function=func)
     if not result:
         print(f"分析失败: {topic} - {start} 到 {end}")
-
 
 @cli.command('DataPipeline')
 @click.option('--topic', required=True, help='专题名称')
@@ -165,7 +155,6 @@ def data_pipeline(topic, date):
         return False
     
     return True
-
 
 @cli.command('AnalyzePipeline')
 @click.option('--topic', required=True, help='专题名称')
