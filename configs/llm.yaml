@@ -20,7 +20,7 @@ router_retrieve_llm:
   qps: 50
   batch_size: 32
 
-# 用于向量化的配置（ragrouter与tagrag共用）
+# 用于向量化的配置（Berttopic、ragrouter与tagrag共用）
 embedding_llm:
   provider: "qwen"
   model: "text-embedding-v4"
