@@ -6,6 +6,13 @@ filter_llm:
   batch_size: 32
   truncation: 200
 
+# 用于内容分析的大模型配置
+content_analysis_llm:
+  provider: "qwen"
+  model: "qwen-plus"
+  qps: 50
+  batch_size: 32
+
 # 用于router_vec的大模型配置
 router_vec_llm:
   provider: "qwen"
@@ -25,4 +32,3 @@ embedding_llm:
   provider: "qwen"
   model: "text-embedding-v4"
   dimension: 1024
-

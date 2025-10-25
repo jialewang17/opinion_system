@@ -122,6 +122,20 @@ def analyze(topic, start, end, func):
     if not result:
         print(f"分析失败: {topic} - {start} 到 {end}")
 
+@cli.command('ContentAnalyze')
+@click.option('--topic', required=True, help='专题名称')
+@click.option('--start', required=True, help='开始日期 (YYYY-MM-DD)')
+@click.option('--end', required=True, help='结束日期 (YYYY-MM-DD)')
+def content_analyze(topic, start, end):
+    """
+    运行内容分析
+    """
+    from src.contentanalyze import run_content_analysis_sync
+    
+    result = run_content_analysis_sync(topic, start, end)
+    if not result:
+        print(f"内容分析失败: {topic} - {start} 到 {end}")
+
 @cli.command('DataPipeline')
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--date', required=True, help='日期 (YYYY-MM-DD)')
