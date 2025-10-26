@@ -11,6 +11,7 @@
 - [数据处理流水线](#数据处理流水线)
 - [数据分析功能](#数据分析功能)
 - [内容分析功能](#内容分析功能)
+- [数据解读功能](#数据解读功能)
 - [RAG检索系统](#rag检索系统)
 - [项目结构](#项目结构)
 - [配置说明](#配置说明)
@@ -27,6 +28,7 @@ OpinionSystem 是一个完整的舆情分析解决方案，集成了数据采集
 - 🔄 **自动化数据流水线**: 从原始数据到数据库存储的全流程自动化
 - 🤖 **AI智能筛选**: 基于大语言模型的相关性筛选和分类
 - 📊 **多维度分析**: 情感、地域、趋势、关键词等7大维度分析
+- 🧠 **智能解读**: 基于AI的舆情分析结果深度解读
 - 🔍 **智能检索系统**: 支持GraphRAG和传统向量检索的混合检索
 - 📈 **可视化报告**: 自动生成多渠道、多维度的分析报告
 - 🎯 **多专题管理**: 支持多专题并行处理和独立管理
@@ -56,7 +58,14 @@ OpinionSystem 是一个完整的舆情分析解决方案，集成了数据采集
 - **智能编码**: 支持信息类别、议题编码、信源编码等多维度分析
 - **批量处理**: 高并发批量分析，支持自定义QPS控制
 
-### 4. RAG检索系统
+### 4. 数据解读模块
+- **智能解读**: 基于AI的舆情分析结果深度解读
+- **TagRAG集成**: 自动召回相关背景文段提供上下文
+- **多维度解读**: 支持情感、关键词、趋势等8大维度解读
+- **高并发处理**: 50并发处理渠道解读任务
+- **数据检查**: 自动检查分析结果有效性，跳过无效数据
+
+### 5. RAG检索系统
 - **TagRAG**: 基于标签的快速检索系统
 - **RouterRAG**: 集成GraphRAG、NormalRAG、TagRAG的混合检索
   - GraphRAG: 知识图谱实体关系检索
@@ -87,6 +96,10 @@ OpinionSystem
 │   ├── 关键词提取
 │   ├── 趋势分析
 │   └── 内容编码分析
+├── 解读层
+│   ├── 智能解读引擎
+│   ├── TagRAG集成
+│   └── 多维度解读
 └── 检索层
     ├── TagRAG检索
     └── RouterRAG检索
@@ -357,6 +370,148 @@ analysis_prompt: |
 
 ---
 
+## 数据解读功能
+
+### 智能解读系统
+
+基于AI的舆情分析结果智能解读，结合TagRAG背景知识，生成专业的解读报告。
+
+#### 功能特性
+
+- **智能解读**: 基于Qwen-Plus的深度解读分析
+- **TagRAG集成**: 自动召回相关背景文段提供上下文
+- **高并发处理**: 50并发处理渠道解读任务
+- **数据检查**: 自动检查分析结果有效性，跳过无效数据
+- **详细日志**: 完整的步骤跟踪和错误报告
+
+#### 解读维度
+
+**支持的分析类型**:
+- **情感分析** (attitude): 情感倾向解读
+- **话题分类** (classification): 内容分类解读
+- **地域分析** (geography): 地域分布解读
+- **关键词分析** (keywords): 关键词热点解读
+- **发布者分析** (publishers): 发布机构解读
+- **趋势分析** (trends): 时间趋势解读
+- **声量分析** (volume): 声量分布解读
+- **内容分析** (contentanalyze): 内容编码解读
+
+#### 使用方法
+
+**运行完整解读**:
+```bash
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31
+```
+
+**运行单个解读**:
+```bash
+# 情感分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func attitude
+
+# 关键词分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func keywords
+
+# 趋势分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func trends
+```
+
+**输出结果**:
+```
+data/explain/{专题}/{时间范围}/
+├── attitude/        # 情感解读
+│   ├── 总体/attitude.json
+│   ├── 微信/attitude.json
+│   ├── 微博/attitude.json
+│   └── ...
+├── keywords/        # 关键词解读
+│   ├── 总体/keywords.json
+│   ├── 微信/keywords.json
+│   └── ...
+├── trends/          # 趋势解读
+│   ├── 总体/trends.json
+│   └── ...
+└── contentanalyze/  # 内容分析解读
+    ├── 微信/contentanalyze.json
+    └── ...
+```
+
+#### 配置解读提示词
+
+为每个专题创建解读规则配置文件：
+
+**文件位置**: `configs/prompt/explain/{专题}.yaml`
+
+**配置示例**:
+```yaml
+# 解读提示词配置
+prompts:
+  attitude:
+    system: |
+      你是一个专业的舆情分析师，专门负责解读情感态度分析数据。请根据提供的情感数据，生成专业、客观、有洞察力的解读报告。
+    user: |
+      请分析以下情感态度数据，生成专业的解读报告：
+      
+      数据：{data}
+      
+      要求：
+      1. 分析情感分布的整体态势
+      2. 识别情感倾向的主要特征
+      3. 分析情感分布的原因和影响
+      4. 提供情感管理的建议
+      5. 输出格式为JSON，包含title、summary、insights、recommendations字段
+
+  keywords:
+    system: |
+      你是一个专业的舆情分析师，专门负责解读关键词分析数据。请根据提供的关键词数据，生成专业、客观、有洞察力的解读报告。
+    user: |
+      请分析以下关键词数据，生成专业的解读报告：
+      
+      数据：{data}
+      
+      要求：
+      1. 分析关键词的分布特征
+      2. 识别核心关注点和热点话题
+      3. 分析关键词背后的社会心理
+      4. 提供话题引导建议
+      5. 输出格式为JSON，包含title、summary、insights、recommendations字段
+```
+
+#### 解读流程
+
+1. **数据检查**: 检查分析结果JSON文件是否存在且有效
+2. **TagRAG召回**: 根据专题和功能召回相关背景文段
+3. **提示词构建**: 结合分析数据和背景信息构建完整提示词
+4. **AI解读**: 使用Qwen-Plus生成专业解读报告
+5. **结果保存**: 保存为JSON格式的解读结果
+
+#### 技术特点
+
+- **智能检查**: 自动检查分析结果有效性，跳过无效数据
+- **TagRAG集成**: 每个解读都会召回相关背景文段
+- **配置驱动**: 使用llm.yaml中的explain_llm配置
+- **高并发**: 50并发处理渠道解读任务
+- **详细日志**: 完整的步骤跟踪和错误报告
+- **错误容错**: 单个解读失败不影响其他解读继续执行
+
+#### 解读输出格式
+
+```json
+{
+  "title": "情感态度解读",
+  "summary": "整体情感分布呈现中性为主的特征...",
+  "insights": [
+    "中性情感占主导地位，说明公众对话题保持理性态度",
+    "负面情感占比较低，表明话题争议性不强"
+  ],
+  "recommendations": [
+    "继续保持中性传播策略",
+    "关注负面情感的具体原因"
+  ]
+}
+```
+
+---
+
 ## RAG检索系统
 
 ### TagRAG - 标签检索系统
@@ -576,9 +731,11 @@ OpinionSystem/
 │   ├── analysis.yaml          # 分析功能配置
 │   ├── channels.yaml          # 渠道映射配置
 │   ├── databases.yaml         # 数据库配置
+│   ├── explain.yaml           # 解读功能配置
 │   ├── llm.yaml              # LLM模型配置
 │   ├── stopwords.txt         # 停用词表
 │   └── prompt/               # 提示词模板
+│       ├── explain/           # 解读提示词
 │       ├── filter/           # 筛选提示词
 │       ├── router_vec/       # 向量化提示词
 │       └── router_retrieve/  # 检索提示词
@@ -588,7 +745,8 @@ OpinionSystem/
 │   ├── clean/                # 清洗数据
 │   ├── filter/               # 筛选数据
 │   ├── fetch/                # 提取数据
-│   └── analyze/              # 分析结果
+│   ├── analyze/              # 分析结果
+│   └── explain/              # 解读结果
 ├── logs/                      # 日志目录
 │   ├── RouterVectorize_{主题}/
 │   └── RagRouter_{主题}/
@@ -600,6 +758,7 @@ OpinionSystem/
 │   ├── query/                # 查询模块
 │   ├── fetch/                # 提取模块
 │   ├── analyze/              # 分析模块
+│   ├── explain/              # 解读模块
 │   └── utils/                # 工具模块
 │       ├── ai/               # AI接口
 │       ├── io/               # 数据IO
@@ -640,6 +799,14 @@ router_retrieve_llm:
   model: qwen-plus
   max_tokens: 3000
 
+# 数据解读使用的模型
+explain_llm:
+  provider: qwen
+  model: qwen-plus
+  qps: 50
+  batch_size: 32
+  max_tokens: 2000
+
 # 向量模型
 embedding_llm:
   model: text-embedding-v4
@@ -664,7 +831,45 @@ keywords:
   min_freq: 2     # 最小词频
 ```
 
-### 3. 渠道配置 (`configs/channels.yaml`)
+### 3. 解读配置 (`configs/explain.yaml`)
+
+```yaml
+# 解读函数配置
+functions:
+  # 总体解读函数
+  - name: volume
+    target: 总体
+  - name: attitude
+    target: 总体
+  - name: trends
+    target: 总体
+  - name: keywords
+    target: 总体
+  - name: geography
+    target: 总体
+  - name: publishers
+    target: 总体
+  - name: classification
+    target: 总体
+
+  # 渠道解读函数
+  - name: attitude
+    target: 渠道
+  - name: trends
+    target: 渠道
+  - name: keywords
+    target: 渠道
+  - name: geography
+    target: 渠道
+  - name: publishers
+    target: 渠道
+  - name: classification
+    target: 渠道
+  - name: contentanalyze
+    target: 渠道
+```
+
+### 4. 渠道配置 (`configs/channels.yaml`)
 
 ```yaml
 channels:

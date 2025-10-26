@@ -54,8 +54,8 @@ class Retriever:
             self.db_path = db_path
         
         if self.logger:
-            log_success(self.logger, f"初始化检索器 - 主题: {topic_name} (表名: {self.table_name})", "Retriever")
-            
+            pass  # 日志初始化完成
+        
         # 初始化OpenAI客户端
         self._init_client()
         self._load_database()
@@ -82,8 +82,7 @@ class Retriever:
             )
             
             if self.logger:
-                log_success(self.logger, "OpenAI客户端初始化成功", "Retriever")
-                
+                pass  # OpenAI客户端初始化成功
         except Exception as e:
             if self.logger:
                 log_error(self.logger, f"OpenAI客户端初始化失败: {e}", "Retriever")
@@ -106,7 +105,7 @@ class Retriever:
                         'tag_vec': row['tag_vec'].tolist() if hasattr(row['tag_vec'], 'tolist') else list(row['tag_vec'])
                     })
                 if self.logger:
-                    log_success(self.logger, f"加载 {len(self.data)} 条向量记录", "Retriever")
+                    pass  # 向量记录加载成功
             else:
                 if self.logger:
                     log_error(self.logger, f"表 {self.table_name} 不存在", "Retriever")
@@ -289,7 +288,6 @@ def tag_retrieve(query: str,
     """
     # 初始化logger，使用主题名称作为日志标识
     logger = setup_logger(f"TagRetrieve_{topic_name}", "default")
-    log_module_start(logger, "TagRetrieve", f"开始向量检索 - 主题: {topic_name}")
     
     try:
         # 初始化检索器
@@ -311,7 +309,6 @@ def tag_retrieve(query: str,
             "results": results
         }
         
-        log_success(logger, f"检索完成，返回 {len(results)} 条结果", "Retriever")
         return response_data
         
     except Exception as e:
