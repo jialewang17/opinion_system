@@ -405,30 +405,60 @@ python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31
 
 **运行单个解读**:
 ```bash
-# 情感分析解读
+# 声量分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func volume
+
+# 情感态度解读
 python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func attitude
+
+# 趋势分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func trends
 
 # 关键词分析解读
 python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func keywords
 
-# 趋势分析解读
-python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func trends
+# 地域分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func geography
+
+# 发布者分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func publishers
+
+# 话题分类解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func classification
+
+# 内容分析解读
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func contentanalyze
 ```
 
 **输出结果**:
 ```
 data/explain/{专题}/{时间范围}/
-├── attitude/        # 情感解读
+├── volume/          # 声量分析解读
+│   ├── 总体/volume.json
+│   ├── 微信/volume.json
+│   ├── 微博/volume.json
+│   └── ...
+├── attitude/        # 情感态度解读
 │   ├── 总体/attitude.json
 │   ├── 微信/attitude.json
 │   ├── 微博/attitude.json
 │   └── ...
-├── keywords/        # 关键词解读
+├── trends/          # 趋势分析解读
+│   ├── 总体/trends.json
+│   ├── 微信/trends.json
+│   └── ...
+├── keywords/        # 关键词分析解读
 │   ├── 总体/keywords.json
 │   ├── 微信/keywords.json
 │   └── ...
-├── trends/          # 趋势解读
-│   ├── 总体/trends.json
+├── geography/       # 地域分析解读
+│   ├── 总体/geography.json
+│   └── ...
+├── publishers/      # 发布者分析解读
+│   ├── 总体/publishers.json
+│   └── ...
+├── classification/  # 话题分类解读
+│   ├── 总体/classification.json
 │   └── ...
 └── contentanalyze/  # 内容分析解读
     ├── 微信/contentanalyze.json

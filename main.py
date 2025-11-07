@@ -152,6 +152,20 @@ def explain(topic, start, end, func):
     if not result:
         print(f"解读失败: {topic} - {start} 到 {end}")
 
+@cli.command('Report')
+@click.option('--topic', required=True, help='专题名称')
+@click.option('--start', required=True, help='开始日期 (YYYY-MM-DD)')
+@click.option('--end', required=True, help='结束日期 (YYYY-MM-DD)')
+def report(topic, start, end):
+    """
+    生成DOCX报告
+    """
+    from src.report import run_report
+    
+    result = run_report(topic, start, end)
+    if not result:
+        print(f"报告生成失败: {topic} - {start} 到 {end}")
+
 @cli.command('DataPipeline')
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--date', required=True, help='日期 (YYYY-MM-DD)')
