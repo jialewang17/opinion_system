@@ -30,6 +30,22 @@ def cli():
     """
     pass
 
+@cli.command('TopicBertopic')
+@click.option('--topic', required=True, help='专题名称')
+@click.option('--start', required=True, help='开始日期 (YYYY-MM-DD)')
+@click.option('--end', required=False, help='结束日期 (YYYY-MM-DD)，如果不提供则使用start作为单日期')
+@click.option('--userdict', required=False, help='可选：用户词典路径，默认 configs/userdict.txt')
+@click.option('--stopwords', required=False, help='可选：停用词路径，默认 configs/stopwords.txt')
+def topic_bertopic(topic, start, end, userdict, stopwords):
+    """
+    运行BERTopic+Qwen主题分析（基于数据库数据）
+    """
+    from src.topic import run_topic_bertopic
+    ok = run_topic_bertopic(topic, start, end_date=end, fetch_dir=None, userdict=userdict, stopwords=stopwords)
+    if not ok:
+        date_range = f"{start}_{end}" if end else start
+        print(f"TopicBertopic 运行失败: {topic} - {date_range}")
+
 @cli.command('Merge')
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--date', required=True, help='日期 (YYYY-MM-DD)')
