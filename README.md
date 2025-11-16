@@ -509,12 +509,18 @@ analysis_prompt: |
 - **趋势分析** (trends): 时间趋势解读
 - **声量分析** (volume): 声量分布解读
 - **内容分析** (contentanalyze): 内容编码解读
+- **主题分析** (bertopic): BERTopic主题聚类结果解读
 
 #### 使用方法
 
-**运行完整解读**:
+**运行完整解读**（包括总体和渠道）:
 ```bash
 python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31
+```
+
+**仅运行所有总体类型解读**（不包括渠道）:
+```bash
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --only-overall
 ```
 
 **运行单个解读**:
@@ -542,7 +548,17 @@ python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func
 
 # 内容分析解读
 python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func contentanalyze
+
+# 主题分析解读（BERTopic）
+python main.py Explain --topic 控烟 --start 2025-01-01 --end 2025-01-31 --func bertopic
 ```
+
+**参数说明**:
+- `--topic`: 专题名称（必填）
+- `--start`: 开始日期，格式 YYYY-MM-DD（必填）
+- `--end`: 结束日期，格式 YYYY-MM-DD（必填）
+- `--func`: 指定单个解读功能（可选），如 `volume`、`attitude`、`bertopic` 等
+- `--only-overall`: 仅运行所有总体类型的解读任务，不包括渠道解读（可选标志）
 
 **输出结果**:
 ```

@@ -12,6 +12,15 @@ import warnings
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
+# 严格抑制所有警告（在导入可能产生警告的库之前）
+warnings.filterwarnings("ignore")  # 抑制所有警告
+warnings.simplefilter("ignore")  # 设置默认过滤器为忽略
+# 特别抑制 pkg_resources 相关警告
+warnings.filterwarnings("ignore", message=".*pkg_resources.*")
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 import pandas as pd
 import numpy as np
 import jieba
@@ -22,10 +31,6 @@ from umap import UMAP
 from hdbscan import HDBSCAN
 from sklearn.feature_extraction.text import CountVectorizer
 from collections import defaultdict
-
-# 抑制警告
-warnings.filterwarnings("ignore", message=".*pkg_resources.*", category=UserWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
 
 # 抑制jieba的日志输出（设置为ERROR级别，减少输出）
 jieba.setLogLevel(60)  # 60 = ERROR级别，可以抑制"Building prefix dict..."等信息
@@ -282,14 +287,11 @@ def _generate_jsons(topic_model: BERTopic, documents: List[str], embeddings: np.
     p1.write_text(json.dumps(stats_result, ensure_ascii=False, indent=2), encoding="utf-8")
     p2.write_text(json.dumps(topic_keywords, ensure_ascii=False, indent=2), encoding="utf-8")
     p3.write_text(json.dumps(doc_coords, ensure_ascii=False, indent=2), encoding="utf-8")
-    log_save_success(logger, str(p1), "TopicBertopic")
-    log_save_success(logger, str(p2), "TopicBertopic")
-    log_save_success(logger, str(p3), "TopicBertopic")
 
     return stats_result
 
 
-async def _call_llm_recluster(topic_stats: Dict, logger) -> Optional[Dict]:
+async def _call_llm_recluster(topic_stats: Dict, topic: str, logger) -> Optional[Dict]:
     """调用大模型进行主题合并"""
     try:
         client = OpenAI(api_key=get_api_key(), base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
@@ -302,8 +304,8 @@ async def _call_llm_recluster(topic_stats: Dict, logger) -> Optional[Dict]:
                 "关键词": keywords[:20]
             }
         
-        # 加载提示词配置
-        prompt_config = _load_prompt("topic_bertopic/recluster.yaml", "topic_bertopic_recluster", logger)
+        # 加载提示词配置：根据主题动态加载对应的yaml文件
+        prompt_config = _load_prompt(f"topic_bertopic/{topic}.yaml", "topic_bertopic_recluster", logger)
         if not prompt_config:
             log_error(logger, "无法加载再聚类提示词，使用默认提示词", "TopicBertopic")
             prompt_config = {
@@ -404,9 +406,9 @@ def _calculate_reclustered_keywords(topic_stats: Dict, merge_result: Dict, namin
     return reclustered_topics
 
 
-async def _generate_reclustered_json(topic_stats: Dict, out_dir: Path, logger) -> Optional[Dict]:
+async def _generate_reclustered_json(topic_stats: Dict, topic: str, out_dir: Path, logger) -> Optional[Dict]:
     """生成大模型再聚类结果JSON"""
-    merge_result = await _call_llm_recluster(topic_stats, logger)
+    merge_result = await _call_llm_recluster(topic_stats, topic, logger)
     if not merge_result:
         log_error(logger, "无法获取大模型合并建议", "TopicBertopic")
         return None
@@ -443,11 +445,9 @@ async def _generate_reclustered_json(topic_stats: Dict, out_dir: Path, logger) -
     
     # 保存JSON文件
     p4 = out_dir / "4大模型再聚类结果.json"
-    p5 = out_dir / "5重聚类主题关键词.json"
+    p5 = out_dir / "5大模型主题关键词.json"
     p4.write_text(json.dumps(final_result, ensure_ascii=False, indent=2), encoding="utf-8")
     p5.write_text(json.dumps(reclustered_keywords_data, ensure_ascii=False, indent=2), encoding="utf-8")
-    log_save_success(logger, str(p4), "TopicBertopic")
-    log_save_success(logger, str(p5), "TopicBertopic")
     
     return final_result
 
@@ -540,7 +540,7 @@ def run_topic_bertopic(topic: str, start_date: str, end_date: str = None,
 
         # 大模型再聚类，生成第4、5个JSON
         import asyncio
-        asyncio.run(_generate_reclustered_json(stats_json, out_analyze, logger))
+        asyncio.run(_generate_reclustered_json(stats_json, topic, out_analyze, logger))
 
         log_success(logger, "主题分析完成", "TopicBertopic")
         return True

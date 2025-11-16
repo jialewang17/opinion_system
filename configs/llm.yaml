@@ -13,13 +13,6 @@ content_analysis_llm:
   qps: 50
   batch_size: 32
 
-# 用于解读分析的大模型配置
-explain_llm:
-  provider: "qwen"
-  model: "qwen-plus"
-  qps: 10
-  batch_size: 8
-
 # 用于router_vec的大模型配置
 router_vec_llm:
   provider: "qwen"

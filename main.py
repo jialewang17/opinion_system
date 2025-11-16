@@ -8,6 +8,14 @@ import asyncio
 import warnings
 from pathlib import Path
 
+# 严格抑制所有警告（在导入其他模块之前）
+warnings.filterwarnings("ignore")  # 抑制所有警告
+warnings.simplefilter("ignore")  # 设置默认过滤器为忽略
+# 特别抑制常见警告类型
+warnings.filterwarnings("ignore", message=".*pkg_resources.*")
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 # 抑制 openpyxl 的默认样式警告
 warnings.filterwarnings("ignore", message="workbook contains no default style, apply openpyxl's default")
 
@@ -156,15 +164,21 @@ def content_analyze(topic, start, end):
 @click.option('--topic', required=True, help='专题名称')
 @click.option('--start', required=True, help='开始日期 (YYYY-MM-DD)')
 @click.option('--end', required=True, help='结束日期 (YYYY-MM-DD)')
-@click.option('--func', help='指定解读函数')
-def explain(topic, start, end, func):
+@click.option('--func', help='指定解读函数（仅运行单个功能）')
+@click.option('--only-overall', is_flag=True, default=False, help='仅运行总体类型的解读任务（不包括渠道）')
+def explain(topic, start, end, func, only_overall):
     """
     运行数据解读
+    
+    使用方式：
+    1. 运行所有解读功能：python main.py Explain --topic 测试 --start 2025-09-23 --end 2025-09-23
+    2. 仅运行单个功能：python main.py Explain --topic 测试 --start 2025-09-23 --end 2025-09-23 --func bertopic
+    3. 仅运行所有总体类型：python main.py Explain --topic 测试 --start 2025-09-23 --end 2025-09-23 --only-overall
     """
     import asyncio
     from src.explain import run_Explain
     
-    result = asyncio.run(run_Explain(topic, start, end_date=end, only_function=func))
+    result = asyncio.run(run_Explain(topic, start, end_date=end, only_function=func, only_overall=only_overall))
     if not result:
         print(f"解读失败: {topic} - {start} 到 {end}")
 
