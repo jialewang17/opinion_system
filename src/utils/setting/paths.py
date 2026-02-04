@@ -6,8 +6,7 @@ from pathlib import Path
 from typing import Literal, Optional
 
 # 目录层级类型
-LAYERS = Literal['raw', 'merge', 'clean', 'filter', 'fetch', 'analyze', 'reports', 'results']
-
+LAYERS = Literal['raw', 'merge', 'clean', 'filter', 'fetch', 'analyze', 'reports', 'results', 'topic', 'bertopic', 'fluid']
 def get_project_root() -> Path:
     """
     获取项目根目录，支持多种检测方式：
